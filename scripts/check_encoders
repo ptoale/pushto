@@ -32,7 +32,7 @@ if __name__ == '__main__':
     )
 
     "Use default configuration"
-    cfg = Configuration('../pushto_default.cfg')
+    cfg = Configuration()
 
     "Setup addresses"
     td_ta_pub_address = "tcp://%s:%s" % (cfg.get_host_ip(), cfg.get_td_ta_port())
