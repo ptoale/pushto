@@ -17,6 +17,8 @@ setuptools.setup(
     },
     license='MIT',
     packages=['pushto'],
-    scripts=['pushto/ui.py'],
+    entry_points={
+        'console_scripts': ['pushto=pushto.ui:main']
+    },
     install_requires=['astropy', 'numpy', 'pyserial', 'requests', 'zmq'],
 )
