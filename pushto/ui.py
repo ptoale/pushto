@@ -327,7 +327,7 @@ class uInterface(object):
         self.state = 'UNDEPLOYED'
 
 
-if __name__ == '__main__':
+def main():
     import argparse
     import logging
     from zmq.log.handlers import PUBHandler
@@ -352,3 +352,6 @@ if __name__ == '__main__':
     ui = uInterface(args.config_file, ctx=ctx);
     ui.splash()
     ui.main_menu()
+
+if __name__ == '__main__':
+    main()
