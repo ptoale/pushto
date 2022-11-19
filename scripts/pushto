@@ -332,12 +332,11 @@ def main():
     import argparse
     import logging
     from zmq.log.handlers import PUBHandler
-
-    DEFAULT_CONFIG = os.path.join(os.path.dirname(__file__), 'pushto_default.cfg')
+    from pushto.config import DEFAULT_CONFIG_FILE
     
     "Setup argument parser"
     parser = argparse.ArgumentParser(description='PushTo User Interface')
-    parser.add_argument('--config_file', default=DEFAULT_CONFIG,
+    parser.add_argument('--config_file', default=DEFAULT_CONFIG_FILE,
                         help='File containing default configuration')
     
     args = parser.parse_args()
