@@ -12,12 +12,33 @@ better than 5 arcmin.
 - The translated data is written to the Stellarium Telescope Control interface
 
 Table of contents:
+- [Installation](#install)
 - [Overview](#overview)
     - [Hardware](#hardware)
     - [Stellarium](#stellarium)
     - [Coordinates](#coords)
     - [User Interface](#ui)
 - [Known Issues](#issues)
+
+---
+
+<div id="install"></div>
+
+## Installation
+
+To install everything into a virtual env:
+
+    > virtualenv pushto
+    > cd pushto
+    > source bin/activate
+    > pip install git+https://github.com/ptoale/pushto.git
+
+Connect your arduino to the serial port and start Stellarium. You can then start the system
+with:
+
+    > pushto
+
+Change the configuration to match your setup and deploy.
 
 ---
 
