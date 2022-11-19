@@ -17,5 +17,5 @@ setuptools.setup(
     },
     license='MIT',
     packages=['pushto'],
-    install_requires=['requests'],
+    install_requires=['astropy', 'numpy', 'requests', 'serial', 'zmq'],
 )

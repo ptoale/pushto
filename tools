@@ -1,6 +1,0 @@
-export PYTHONPATH='/Users/patoale/Dropbox/projects/pushto'
-alias pushto='python pushto/ui.py'
-alias miniterm='python -m serial.tools.miniterm'
-alias list_ports='python -m serial.tools.list_ports -v'
-alias log_listener='python -m zmq.log tcp://127.0.0.1:12345'
-alias moni_listener='python utils/moni_listener.py 127.0.0.1 10014'
