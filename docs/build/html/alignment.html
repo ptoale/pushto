@@ -1,0 +1,243 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>pushto.alignment &#8212; pushto 1.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pushto.config" href="config.html" />
+    <link rel="prev" title="pushto.site" href="site.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="config.html" title="pushto.config"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="site.html" title="pushto.site"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pushto 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="code.html" accesskey="U">The <code class="xref py py-mod docutils literal notranslate"><span class="pre">pushto</span></code> package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">pushto.alignment</span></code></a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-pushto.alignment">
+<span id="pushto-alignment"></span><h1><a class="reference internal" href="#module-pushto.alignment" title="pushto.alignment"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pushto.alignment</span></code></a><a class="headerlink" href="#module-pushto.alignment" title="Permalink to this heading">¶</a></h1>
+<p>Telescope alignment.</p>
+<dl class="simple">
+<dt>Provides:</dt><dd><ul class="simple">
+<li><p>Aligner</p></li>
+</ul>
+</dd>
+</dl>
+<p>Solves Wahba’s problem using single value decomposition (SVD) as outlined in Markley paper.</p>
+<p>Markley paper:
+The Journal of Astronautical Sciences, Vol 36, No 3, July-September 1988, pp 245-258</p>
+<dl class="simple">
+<dt>Telescope coordinates: not aligned</dt><dd><p>theta: elevation angle, measured from reference plane
+phi: azimuthal angle, measured CW around reference plane
+(0, 0): direction telescope is pointing when Arduino starts</p>
+</dd>
+<dt>Horizontal coordinates: aligned with zenith and horizon</dt><dd><p>altitude: elevation angle, measured from horizon
+azimuth: azimuthal angle, measured CW from North
+(0, 0): North on the horizon</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="pushto.alignment.Aligner">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pushto.alignment.</span></span><span class="sig-name descname"><span class="pre">Aligner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_stars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.alignment.Aligner" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Aligner class</dt><dd><ul class="simple">
+<li><p>calculates transformation matrix</p></li>
+<li><p>transforms between telescope &lt;-&gt; horizontal</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>n_stars</strong> (<em>int</em>) – max number of stars to use, optional</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.alignment.Aligner.add_star">
+<span class="sig-name descname"><span class="pre">add_star</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">azi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.alignment.Aligner.add_star" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an alignment star. Rotation matrix is calculated for every added
+star after the second one.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>theta</strong> (<em>float</em>) – polar angle of telescope in degrees</p></li>
+<li><p><strong>phi</strong> (<em>float</em>) – azimuthal angle of telescope in degrees</p></li>
+<li><p><strong>alt</strong> (<em>float</em>) – altitude in degrees</p></li>
+<li><p><strong>azi</strong> (<em>float</em>) – azimuth in degrees</p></li>
+<li><p><strong>weight</strong> (<em>float</em>) – weight of data point, defaults to 1</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.alignment.Aligner.horizontal_to_telescope">
+<span class="sig-name descname"><span class="pre">horizontal_to_telescope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">azi</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.alignment.Aligner.horizontal_to_telescope" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform from horizontal to telescope.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>alt</strong> (<em>float</em>) – altitude in degrees</p></li>
+<li><p><strong>azi</strong> (<em>float</em>) – azimuth in degrees</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>elevation and azimuthal angles in degrees</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list(float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.alignment.Aligner.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pushto.alignment.Aligner.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the alignment.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.alignment.Aligner.telescope_to_horizontal">
+<span class="sig-name descname"><span class="pre">telescope_to_horizontal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.alignment.Aligner.telescope_to_horizontal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform from telescope to horizontal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>theta</strong> (<em>float</em>) – elevation angle in degrees</p></li>
+<li><p><strong>phi</strong> (<em>float</em>) – azimuthal angle in degrees</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>altitude and azimuth in degrees</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list(float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.alignment.Aligner.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pushto.alignment.Aligner.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the correction matrix using the known stars.</p>
+<p>Called automatically when stars are added.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pushto.alignment</span></code></a><ul>
+<li><a class="reference internal" href="#pushto.alignment.Aligner"><code class="docutils literal notranslate"><span class="pre">Aligner</span></code></a><ul>
+<li><a class="reference internal" href="#pushto.alignment.Aligner.add_star"><code class="docutils literal notranslate"><span class="pre">Aligner.add_star()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.alignment.Aligner.horizontal_to_telescope"><code class="docutils literal notranslate"><span class="pre">Aligner.horizontal_to_telescope()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.alignment.Aligner.reset"><code class="docutils literal notranslate"><span class="pre">Aligner.reset()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.alignment.Aligner.telescope_to_horizontal"><code class="docutils literal notranslate"><span class="pre">Aligner.telescope_to_horizontal()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.alignment.Aligner.update"><code class="docutils literal notranslate"><span class="pre">Aligner.update()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="site.html"
+                          title="previous chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pushto.site</span></code></a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="config.html"
+                          title="next chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pushto.config</span></code></a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/alignment.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="config.html" title="pushto.config"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="site.html" title="pushto.site"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pushto 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="code.html" >The <code class="xref py py-mod docutils literal notranslate"><span class="pre">pushto</span></code> package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">pushto.alignment</span></code></a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Patrick Toale.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    </div>
+  </body>
+</html>

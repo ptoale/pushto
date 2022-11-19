@@ -1,0 +1,810 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>pushto.config &#8212; pushto 1.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pushto.ui" href="ui.html" />
+    <link rel="prev" title="pushto.alignment" href="alignment.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="ui.html" title="pushto.ui"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="alignment.html" title="pushto.alignment"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pushto 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="code.html" accesskey="U">The <code class="xref py py-mod docutils literal notranslate"><span class="pre">pushto</span></code> package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">pushto.config</span></code></a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-pushto.config">
+<span id="pushto-config"></span><h1><a class="reference internal" href="#module-pushto.config" title="pushto.config"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pushto.config</span></code></a><a class="headerlink" href="#module-pushto.config" title="Permalink to this heading">¶</a></h1>
+<p>Configuration stuff</p>
+<dl class="simple">
+<dt>[COMMUNICATION]</dt><dd><ul class="simple">
+<li><p>host_ip:      computer IP address, can be 127.0.0.1</p></li>
+<li><p>serial_port:  serial port to which the Arduino is connected to</p></li>
+<li><p>stc_port:     port on which the Telescope Control is attached to</p></li>
+<li><p>td_ta_port:   port on which the TD telescope attitudes are published</p></li>
+<li><p>td_eq_port:   port on which the TD equatorial coords are published</p></li>
+<li><p>pd_eq_port:   port on which the PD equatorial coords ars published</p></li>
+<li><p>pd_ta_port:   port on which the pointing model pairs are published</p></li>
+</ul>
+</dd>
+<dt>[LOCATION]</dt><dd><ul class="simple">
+<li><p>latitude:     latitude as decimal degree</p></li>
+<li><p>longitude:    longitude as decimal degree, negative for west</p></li>
+<li><p>elevation:    elevation in meters</p></li>
+<li><p>pressure:     pressure in hPa, used for refraction correction</p></li>
+<li><p>temperature:  temperature in C, used for refraction correction</p></li>
+<li><p>rel_humidity: relative humidity [0:1], used for refraction correction</p></li>
+</ul>
+</dd>
+<dt>[ENCODERS]</dt><dd><ul class="simple">
+<li><p>theta_npr:    number of counts per revolution for polar encoder, including gearing</p></li>
+<li><p>phi_npr:      number of counts per revolution for azimuthal encoder, including gearing</p></li>
+<li><p>flip_theta:   flip the sense of the polar encoder if true</p></li>
+<li><p>flip_phi:     flip the sense of the azimuthal encoder if true</p></li>
+</ul>
+</dd>
+<dt>[POINTING]</dt><dd><ul class="simple">
+<li><p>ia:           index error in azimuth</p></li>
+<li><p>ie:           index error in elevation</p></li>
+<li><p>an:           north-south misalignment of azimuth axis</p></li>
+<li><p>aw:           west-east misalignment of azimuth axis</p></li>
+<li><p>ca:           non-perpendicularity of optical axis and elevation axis</p></li>
+<li><p>npae:         non-perpendicularity of elevation axis and azimuth axis</p></li>
+<li><p>tx:           tube flexure term proportional to cot(el)</p></li>
+<li><p>tf:           tube flexure term proportional to cos(el)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="pushto.config.Configuration">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pushto.config.</span></span><span class="sig-name descname"><span class="pre">Configuration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration" title="Permalink to this definition">¶</a></dt>
+<dd><p>The configuration handler.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – configuration file name, or None for default configuration</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.get_an">
+<span class="sig-name descname"><span class="pre">get_an</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.get_an" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the north-south misalignment of azimuth axis</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">get_an</span><span class="p">()</span>
+<span class="go">0.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.get_aw">
+<span class="sig-name descname"><span class="pre">get_aw</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.get_aw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the west-east misalignment of azimuth axis</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">get_aw</span><span class="p">()</span>
+<span class="go">0.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.get_ca">
+<span class="sig-name descname"><span class="pre">get_ca</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.get_ca" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the non-perpendicularity of optical axis and elevation axis</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">get_ca</span><span class="p">()</span>
+<span class="go">0.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.get_elevation">
+<span class="sig-name descname"><span class="pre">get_elevation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.get_elevation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the location elevation as an astropy Quantity</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">get_elevation</span><span class="p">()</span>
+<span class="go">&lt;Quantity 85. m&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.get_flip_phi">
+<span class="sig-name descname"><span class="pre">get_flip_phi</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.get_flip_phi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the azimuthal encoder flip flag</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">get_flip_phi</span><span class="p">()</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.get_flip_theta">
+<span class="sig-name descname"><span class="pre">get_flip_theta</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.get_flip_theta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the polar encoder flip flag</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">get_flip_theta</span><span class="p">()</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.get_host_ip">
+<span class="sig-name descname"><span class="pre">get_host_ip</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.get_host_ip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the host ip address</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">get_host_ip</span><span class="p">()</span>
+<span class="go">&#39;127.0.0.1&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.get_ia">
+<span class="sig-name descname"><span class="pre">get_ia</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.get_ia" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the index error in azimuth</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">get_ia</span><span class="p">()</span>
+<span class="go">0.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.get_ie">
+<span class="sig-name descname"><span class="pre">get_ie</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.get_ie" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the index error in elevation</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">get_ie</span><span class="p">()</span>
+<span class="go">0.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.get_latitude">
+<span class="sig-name descname"><span class="pre">get_latitude</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.get_latitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the location latitude as an astropy Latitude object</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">get_latitude</span><span class="p">()</span>
+<span class="go">&lt;Latitude 33.30167 deg&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.get_location">
+<span class="sig-name descname"><span class="pre">get_location</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.get_location" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the location as an astropy EarthLocation object</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">get_location</span><span class="p">()</span>
+<span class="go">&lt;EarthLocation (222761.04869822, -5331598.26772541, 3482016.91092873) m&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.get_longitude">
+<span class="sig-name descname"><span class="pre">get_longitude</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.get_longitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the location longitude as an astropy Longitude object</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">get_longitude</span><span class="p">()</span>
+<span class="go">&lt;Longitude 272.3925 deg&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.get_npae">
+<span class="sig-name descname"><span class="pre">get_npae</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.get_npae" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the non-perpendicularity of elevation axis and azimuth axis</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">get_npae</span><span class="p">()</span>
+<span class="go">0.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.get_pd_eq_port">
+<span class="sig-name descname"><span class="pre">get_pd_eq_port</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.get_pd_eq_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the pointing data: equatorial port</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">get_pd_eq_port</span><span class="p">()</span>
+<span class="go">&#39;10013&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.get_pd_ta_port">
+<span class="sig-name descname"><span class="pre">get_pd_ta_port</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.get_pd_ta_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the pointing data: telescope attitude port</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">get_pd_ta_port</span><span class="p">()</span>
+<span class="go">&#39;10014&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.get_phi_npr">
+<span class="sig-name descname"><span class="pre">get_phi_npr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.get_phi_npr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the npr of the azimuthal encoder</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">get_phi_npr</span><span class="p">()</span>
+<span class="go">15507</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.get_pointing_model">
+<span class="sig-name descname"><span class="pre">get_pointing_model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.get_pointing_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the parameters of the pointing model as a list
+[ia, ie, an, aw, ca, npae, tx, tf]</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">get_pointing_model</span><span class="p">()</span>
+<span class="go">[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.get_pressure">
+<span class="sig-name descname"><span class="pre">get_pressure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.get_pressure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the location pressure as an astropy Quantity</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">get_pressure</span><span class="p">()</span>
+<span class="go">&lt;Quantity 1013. hPa&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.get_rel_humidity">
+<span class="sig-name descname"><span class="pre">get_rel_humidity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.get_rel_humidity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the location relative humidity as a float between 0 and 1</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">get_rel_humidity</span><span class="p">()</span>
+<span class="go">0.75</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.get_serial_port">
+<span class="sig-name descname"><span class="pre">get_serial_port</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.get_serial_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the serial port</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">get_serial_port</span><span class="p">()</span>
+<span class="go">&#39;/dev/cu.usbmodem143301&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.get_stc_port">
+<span class="sig-name descname"><span class="pre">get_stc_port</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.get_stc_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the STC port number as an int</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">get_stc_port</span><span class="p">()</span>
+<span class="go">10002</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.get_td_eq_port">
+<span class="sig-name descname"><span class="pre">get_td_eq_port</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.get_td_eq_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the telescope data: equitorial port</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">get_td_eq_port</span><span class="p">()</span>
+<span class="go">&#39;10012&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.get_td_ta_port">
+<span class="sig-name descname"><span class="pre">get_td_ta_port</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.get_td_ta_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the telescope data: telescope attitude port</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">get_td_ta_port</span><span class="p">()</span>
+<span class="go">&#39;10011&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.get_temperature">
+<span class="sig-name descname"><span class="pre">get_temperature</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.get_temperature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the location temperature as an astropy Quantity</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">get_temperature</span><span class="p">()</span>
+<span class="go">&lt;Quantity 15. deg_C&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.get_tf">
+<span class="sig-name descname"><span class="pre">get_tf</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.get_tf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get part of (?) the tube flexure</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">get_tf</span><span class="p">()</span>
+<span class="go">0.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.get_theta_npr">
+<span class="sig-name descname"><span class="pre">get_theta_npr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.get_theta_npr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the npr of the polar encoder</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">get_theta_npr</span><span class="p">()</span>
+<span class="go">27196</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.get_tx">
+<span class="sig-name descname"><span class="pre">get_tx</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.get_tx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get part of (?) the tube flexure</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">get_tx</span><span class="p">()</span>
+<span class="go">0.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.set_an">
+<span class="sig-name descname"><span class="pre">set_an</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.set_an" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the north-south misalignment of azimuth axis, units are degrees for now</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">set_an</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.set_aw">
+<span class="sig-name descname"><span class="pre">set_aw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.set_aw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the west-east misalignment of azimuth axis, units are degrees for now</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">set_aw</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.set_ca">
+<span class="sig-name descname"><span class="pre">set_ca</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.set_ca" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the non-perpendicularity of optical axis and elevation axis, units are degrees for now</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">set_ca</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.set_elevation">
+<span class="sig-name descname"><span class="pre">set_elevation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elevation</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.set_elevation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the location elevation from an astropy Quantity</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ele</span> <span class="o">=</span> <span class="mi">85</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">m</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">set_elevation</span><span class="p">(</span><span class="n">ele</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.set_flip_phi">
+<span class="sig-name descname"><span class="pre">set_flip_phi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flip_phi</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.set_flip_phi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the azimuthal encoder flip flag</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">set_flip_phi</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.set_flip_theta">
+<span class="sig-name descname"><span class="pre">set_flip_theta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flip_theta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.set_flip_theta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the polar encoder flip flag</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">set_flip_theta</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.set_host_ip">
+<span class="sig-name descname"><span class="pre">set_host_ip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.set_host_ip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the host ip address</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">set_host_ip</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.set_ia">
+<span class="sig-name descname"><span class="pre">set_ia</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.set_ia" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the index error in azimuth, units are degrees for now</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">set_ia</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.set_ie">
+<span class="sig-name descname"><span class="pre">set_ie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.set_ie" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the index error in elevation, units are degrees for now</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">set_ie</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.set_latitude">
+<span class="sig-name descname"><span class="pre">set_latitude</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">latitude</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.set_latitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the location latitude from an astropy Latitude object</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lat</span> <span class="o">=</span> <span class="n">Latitude</span><span class="p">(</span><span class="mf">33.30167</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">set_latitude</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.set_location">
+<span class="sig-name descname"><span class="pre">set_location</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.set_location" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the location latitude, longitude, and elevation from an astropy EarthLocation</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">loc</span> <span class="o">=</span> <span class="n">EarthLocation</span><span class="p">(</span><span class="n">lat</span><span class="o">=</span><span class="mf">33.30167</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="mf">272.3925</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">85</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">m</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">set_location</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.set_longitude">
+<span class="sig-name descname"><span class="pre">set_longitude</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">longitude</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.set_longitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the location longitude from an astropy Longitude object</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lon</span> <span class="o">=</span> <span class="n">Longitude</span><span class="p">(</span><span class="mf">272.3925</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">set_longitude</span><span class="p">(</span><span class="n">lon</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.set_npae">
+<span class="sig-name descname"><span class="pre">set_npae</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.set_npae" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the non-perpendicularity of elevation axis and azimuth axis, units are degrees for now</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">set_npae</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.set_pd_eq_port">
+<span class="sig-name descname"><span class="pre">set_pd_eq_port</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.set_pd_eq_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the pointing data: equatorial port</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">set_pd_eq_port</span><span class="p">(</span><span class="s1">&#39;10013&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.set_pd_ta_port">
+<span class="sig-name descname"><span class="pre">set_pd_ta_port</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.set_pd_ta_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the pointing data: telescope attitude port</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">set_pd_ta_port</span><span class="p">(</span><span class="s1">&#39;10014&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.set_phi_npr">
+<span class="sig-name descname"><span class="pre">set_phi_npr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phi_npr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.set_phi_npr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the npr of the azimuthal encoder</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">set_phi_npr</span><span class="p">(</span><span class="mi">2400</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.set_pointing_model">
+<span class="sig-name descname"><span class="pre">set_pointing_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.set_pointing_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the parameters of the pointing model from a list
+[ia, ie, an, aw, ca, npae, tx, tf]</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">set_pointing_model</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.set_pressure">
+<span class="sig-name descname"><span class="pre">set_pressure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pressure</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.set_pressure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the location pressure from an astropy Quantity</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="mi">1013</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">hPa</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">set_pressure</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.set_rel_humidity">
+<span class="sig-name descname"><span class="pre">set_rel_humidity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">humidity</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.set_rel_humidity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the location relative humidity from a float</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">set_rel_humidity</span><span class="p">(</span><span class="mf">0.75</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.set_serial_port">
+<span class="sig-name descname"><span class="pre">set_serial_port</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.set_serial_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the serial port</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">set_serial_port</span><span class="p">(</span><span class="s1">&#39;/dev/cu.usbmodem143301&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.set_stc_port">
+<span class="sig-name descname"><span class="pre">set_stc_port</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.set_stc_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the STC port number</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">set_stc_port</span><span class="p">(</span><span class="mi">10002</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.set_td_eq_port">
+<span class="sig-name descname"><span class="pre">set_td_eq_port</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.set_td_eq_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the telescope data: equatorial port</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">set_td_eq_port</span><span class="p">(</span><span class="s1">&#39;10012&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.set_td_ta_port">
+<span class="sig-name descname"><span class="pre">set_td_ta_port</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.set_td_ta_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the telescope data: telescope attitude port</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">set_td_ta_port</span><span class="p">(</span><span class="s1">&#39;10011&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.set_temperature">
+<span class="sig-name descname"><span class="pre">set_temperature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temperature</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.set_temperature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the location temperature from an astropy Quantity</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="mi">15</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">Celsius</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">set_temperature</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.set_tf">
+<span class="sig-name descname"><span class="pre">set_tf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.set_tf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set part of (?) the tube flexure, units are degrees for now</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">set_tf</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.set_theta_npr">
+<span class="sig-name descname"><span class="pre">set_theta_npr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta_npr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.set_theta_npr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the npr of the polar encoder</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">set_theta_npr</span><span class="p">(</span><span class="mi">2400</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pushto.config.Configuration.set_tx">
+<span class="sig-name descname"><span class="pre">set_tx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pushto.config.Configuration.set_tx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set part of (?) the tube flexure, units are degrees for now</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">set_tx</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pushto.config</span></code></a><ul>
+<li><a class="reference internal" href="#pushto.config.Configuration"><code class="docutils literal notranslate"><span class="pre">Configuration</span></code></a><ul>
+<li><a class="reference internal" href="#pushto.config.Configuration.get_an"><code class="docutils literal notranslate"><span class="pre">Configuration.get_an()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.get_aw"><code class="docutils literal notranslate"><span class="pre">Configuration.get_aw()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.get_ca"><code class="docutils literal notranslate"><span class="pre">Configuration.get_ca()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.get_elevation"><code class="docutils literal notranslate"><span class="pre">Configuration.get_elevation()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.get_flip_phi"><code class="docutils literal notranslate"><span class="pre">Configuration.get_flip_phi()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.get_flip_theta"><code class="docutils literal notranslate"><span class="pre">Configuration.get_flip_theta()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.get_host_ip"><code class="docutils literal notranslate"><span class="pre">Configuration.get_host_ip()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.get_ia"><code class="docutils literal notranslate"><span class="pre">Configuration.get_ia()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.get_ie"><code class="docutils literal notranslate"><span class="pre">Configuration.get_ie()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.get_latitude"><code class="docutils literal notranslate"><span class="pre">Configuration.get_latitude()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.get_location"><code class="docutils literal notranslate"><span class="pre">Configuration.get_location()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.get_longitude"><code class="docutils literal notranslate"><span class="pre">Configuration.get_longitude()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.get_npae"><code class="docutils literal notranslate"><span class="pre">Configuration.get_npae()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.get_pd_eq_port"><code class="docutils literal notranslate"><span class="pre">Configuration.get_pd_eq_port()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.get_pd_ta_port"><code class="docutils literal notranslate"><span class="pre">Configuration.get_pd_ta_port()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.get_phi_npr"><code class="docutils literal notranslate"><span class="pre">Configuration.get_phi_npr()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.get_pointing_model"><code class="docutils literal notranslate"><span class="pre">Configuration.get_pointing_model()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.get_pressure"><code class="docutils literal notranslate"><span class="pre">Configuration.get_pressure()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.get_rel_humidity"><code class="docutils literal notranslate"><span class="pre">Configuration.get_rel_humidity()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.get_serial_port"><code class="docutils literal notranslate"><span class="pre">Configuration.get_serial_port()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.get_stc_port"><code class="docutils literal notranslate"><span class="pre">Configuration.get_stc_port()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.get_td_eq_port"><code class="docutils literal notranslate"><span class="pre">Configuration.get_td_eq_port()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.get_td_ta_port"><code class="docutils literal notranslate"><span class="pre">Configuration.get_td_ta_port()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.get_temperature"><code class="docutils literal notranslate"><span class="pre">Configuration.get_temperature()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.get_tf"><code class="docutils literal notranslate"><span class="pre">Configuration.get_tf()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.get_theta_npr"><code class="docutils literal notranslate"><span class="pre">Configuration.get_theta_npr()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.get_tx"><code class="docutils literal notranslate"><span class="pre">Configuration.get_tx()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.set_an"><code class="docutils literal notranslate"><span class="pre">Configuration.set_an()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.set_aw"><code class="docutils literal notranslate"><span class="pre">Configuration.set_aw()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.set_ca"><code class="docutils literal notranslate"><span class="pre">Configuration.set_ca()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.set_elevation"><code class="docutils literal notranslate"><span class="pre">Configuration.set_elevation()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.set_flip_phi"><code class="docutils literal notranslate"><span class="pre">Configuration.set_flip_phi()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.set_flip_theta"><code class="docutils literal notranslate"><span class="pre">Configuration.set_flip_theta()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.set_host_ip"><code class="docutils literal notranslate"><span class="pre">Configuration.set_host_ip()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.set_ia"><code class="docutils literal notranslate"><span class="pre">Configuration.set_ia()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.set_ie"><code class="docutils literal notranslate"><span class="pre">Configuration.set_ie()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.set_latitude"><code class="docutils literal notranslate"><span class="pre">Configuration.set_latitude()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.set_location"><code class="docutils literal notranslate"><span class="pre">Configuration.set_location()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.set_longitude"><code class="docutils literal notranslate"><span class="pre">Configuration.set_longitude()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.set_npae"><code class="docutils literal notranslate"><span class="pre">Configuration.set_npae()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.set_pd_eq_port"><code class="docutils literal notranslate"><span class="pre">Configuration.set_pd_eq_port()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.set_pd_ta_port"><code class="docutils literal notranslate"><span class="pre">Configuration.set_pd_ta_port()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.set_phi_npr"><code class="docutils literal notranslate"><span class="pre">Configuration.set_phi_npr()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.set_pointing_model"><code class="docutils literal notranslate"><span class="pre">Configuration.set_pointing_model()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.set_pressure"><code class="docutils literal notranslate"><span class="pre">Configuration.set_pressure()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.set_rel_humidity"><code class="docutils literal notranslate"><span class="pre">Configuration.set_rel_humidity()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.set_serial_port"><code class="docutils literal notranslate"><span class="pre">Configuration.set_serial_port()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.set_stc_port"><code class="docutils literal notranslate"><span class="pre">Configuration.set_stc_port()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.set_td_eq_port"><code class="docutils literal notranslate"><span class="pre">Configuration.set_td_eq_port()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.set_td_ta_port"><code class="docutils literal notranslate"><span class="pre">Configuration.set_td_ta_port()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.set_temperature"><code class="docutils literal notranslate"><span class="pre">Configuration.set_temperature()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.set_tf"><code class="docutils literal notranslate"><span class="pre">Configuration.set_tf()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.set_theta_npr"><code class="docutils literal notranslate"><span class="pre">Configuration.set_theta_npr()</span></code></a></li>
+<li><a class="reference internal" href="#pushto.config.Configuration.set_tx"><code class="docutils literal notranslate"><span class="pre">Configuration.set_tx()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="alignment.html"
+                          title="previous chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pushto.alignment</span></code></a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="ui.html"
+                          title="next chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pushto.ui</span></code></a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/config.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="ui.html" title="pushto.ui"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="alignment.html" title="pushto.alignment"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pushto 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="code.html" >The <code class="xref py py-mod docutils literal notranslate"><span class="pre">pushto</span></code> package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">pushto.config</span></code></a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Patrick Toale.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    </div>
+  </body>
+</html>

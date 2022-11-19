@@ -1,0 +1,142 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Helper Programs &#8212; pushto 1.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Arduino Sketch" href="sketch.html" />
+    <link rel="prev" title="pushto.ui" href="ui.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="sketch.html" title="Arduino Sketch"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="ui.html" title="pushto.ui"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pushto 1.0.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Helper Programs</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="helper-programs">
+<h1>Helper Programs<a class="headerlink" href="#helper-programs" title="Permalink to this heading">¶</a></h1>
+<p>There are two standalone programs in the <cite>utils</cite> directory that may be of help. The first is
+a fake arduino server that can mimic serial communication via a virtual socket. To use it,
+first create the virtual sockets (requires to socat utility):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">socat</span> <span class="o">-</span><span class="n">dd</span> <span class="n">pty</span><span class="p">,</span><span class="n">raw</span><span class="p">,</span><span class="n">echo</span><span class="o">=</span><span class="mi">0</span> <span class="n">pty</span><span class="p">,</span><span class="n">raw</span><span class="p">,</span><span class="n">echo</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">ispeed</span><span class="o">=</span><span class="mi">9600</span><span class="p">,</span><span class="n">ospeed</span><span class="o">=</span><span class="mi">9600</span>
+</pre></div>
+</div>
+<p>Record the two ports that are recorded: one is written to and the other is read by
+<code class="xref py py-class docutils literal notranslate"><span class="pre">pushto.arduino.ArduinoProxy</span></code>. You can put socat in the background with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="o">^</span><span class="n">Z</span>
+</pre></div>
+</div>
+<p>and then:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">bg</span>
+</pre></div>
+</div>
+<p>Then start the faux server with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">python</span> <span class="n">fake_arduino</span><span class="o">.</span><span class="n">py</span> <span class="o">&lt;</span><span class="n">port1</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>This too can be put in the background. At this point &lt;port2&gt; will contain serial data
+of the correct format but with very little content.</p>
+<p>The other help is a subscriber service for the monitoring stream. You must first start the system
+with a configured monitoring PUB address and then run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">python</span> <span class="n">moni_listener</span><span class="o">.</span><span class="n">py</span> <span class="o">&lt;</span><span class="n">moni_host</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">moni_port</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="ui.html"
+                          title="previous chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pushto.ui</span></code></a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="sketch.html"
+                          title="next chapter">Arduino Sketch</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/helpers.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="sketch.html" title="Arduino Sketch"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="ui.html" title="pushto.ui"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pushto 1.0.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Helper Programs</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Patrick Toale.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    </div>
+  </body>
+</html>
