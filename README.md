@@ -18,7 +18,6 @@ Table of contents:
     - [Coordinates](#coords)
     - [User Interface](#ui)
 - [Known Issues](#issues)
-- [Code Documentation](docs/build/html/index.html)
 
 ---
 
