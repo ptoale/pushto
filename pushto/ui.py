@@ -328,13 +328,16 @@ class uInterface(object):
 
 
 def main():
+    import os
     import argparse
     import logging
     from zmq.log.handlers import PUBHandler
 
+    DEFAULT_CONFIG = os.path.join(os.path.dirname(__file__), 'pushto_default.cfg')
+    
     "Setup argument parser"
     parser = argparse.ArgumentParser(description='PushTo User Interface')
-    parser.add_argument('--config_file', default='pushto_default.cfg',
+    parser.add_argument('--config_file', default=DEFAULT_CONFIG,
                         help='File containing default configuration')
     
     args = parser.parse_args()

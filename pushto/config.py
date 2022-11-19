@@ -36,13 +36,14 @@ Configuration stuff
     - tf:           tube flexure term proportional to cos(el)
 
 """
+import os
 import logging
 from configparser import ConfigParser
 #
 import astropy.units as u
 from astropy.coordinates import EarthLocation, Latitude, Longitude
 
-DEFAULT_CONFIG_FILE = '../pushto_default.cfg'
+DEFAULT_CONFIG_FILE = os.path.join(os.path.dirname(__file__), 'pushto_default.cfg')
 
 class Configuration(object):
     """
