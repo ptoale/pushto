@@ -1,0 +1,54 @@
+#!/usr/bin/env python
+"""
+Fake the Arduino serial output
+
+Writes to a virtual socket using the socat utility.
+You must first create the virtual sockets:
+
+> socat -dd pty,raw,echo=0 pty,raw,echo=0,ispeed=9600,ospeed=9600
+
+Pay attention to the virtual ports that are created. One of them is written to by
+this program. The other must be given to the ArduinoServer object. Put this is the background 
+
+> ^Z
+> bg
+
+Now start this progam with the other virtual port.
+
+> ./fake_arduino.py <port1>
+
+Put this in the background too.
+
+Finally start the ArduinoServer:
+
+> ./arduino.py <port2>
+
+Might try:
+> socat -v,-x -  /dev/cu.usbserial-FTFMMPHX,raw,nonblock,echo=0,crnl,ispeed=9600,ospeed=9600
+with the usb adapter attached, but its working as described above.
+
+
+Currently the data is pretty dumb but the time does update
+"""
+import argparse
+import time
+#
+import serial
+
+"Setup argument parser"
+parser = argparse.ArgumentParser(description='Fake Arduino Streamer')
+parser.add_argument('port', help='serial port connected to arduino')
+    
+args = parser.parse_args()
+
+with serial.Serial(args.port, 9600, rtscts=True,dsrdtr=True) as ser:
+    n = 0
+    m = 0
+    d = 50
+    while True:
+        msg = '%s %s %s 0 0\r\n' % (n, m, m)
+        ser.write(msg.encode('utf-8'))
+        n += d
+        m += 1
+        time.sleep(d/1000)
+

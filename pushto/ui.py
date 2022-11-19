@@ -1,0 +1,354 @@
+#!/usr/bin/env python
+"""
+User interface.
+
+Provides:
+    - uInterface
+
+"""
+import time
+#
+import zmq
+import astropy.units as u
+from astropy.coordinates import EarthLocation, Latitude, Longitude
+from astropy.time import Time
+#
+from pushto.config import Configuration
+from pushto.stellarium import StellariumTC
+from pushto.telescope import Telescope
+from pushto.site import Site
+
+class uInterface(object):
+    """
+    The user interface class.
+    
+    :param config_file: name of configuration file with default settings
+    :type config_file: str
+    :param ctx: the :mod:`zmq` oontext, optional
+    :type ctx: :obj:`zmq.Context` or None
+
+    >>> ui = uInterface();
+    >>> ui.splash()
+    >>> ui.main_menu()
+    
+    The interface can be started with:
+    
+       python ui.py
+    
+    """
+
+    def __init__(self, config_file, ctx=None):
+
+        "Get the configuration object"
+        self.cfg = Configuration(filename=config_file)
+
+        "Setup the command socket"
+        if ctx is None:
+            self.ctx = zmq.Context()
+        else:
+            self.ctx = ctx
+
+        self.stellarium = None
+        self.telescope = None
+        self.site = None
+        self.state = 'UNDEPLOYED'
+
+    def splash(self):
+        """
+        Clear the screen and print the splash message.
+        """
+        print('\033c')
+        print("************************************************")
+        print("**                PushTo v1.0                 **")
+        print("**                                            **")
+        print("** UTC: %s               **" % Time.now().iso)
+        print("************************************************\n")
+
+    def main_menu(self):
+        """
+        Go to the main menu of the interface.
+        """
+    
+        while True:
+            print("** Main Menu:\n")
+            print("** 1. Configure")
+            print("** 2. Deploy")
+            print("** 3. Reset Alignment")
+            print("** 4. Quit\n")
+            
+            response = input("** Enter menu number: ")
+            
+            if response == '1':
+                self.configuration_menu()
+            elif response == '2':
+                self.deploy()
+            elif response == '3':
+                if self.site:
+                    print('Reseting alignment')
+                    self.site.reset_alignment()
+            elif response == '4':
+                self.undeploy()
+                break
+            else:
+                print("Error: %s is not a valid menu option, please try again" % response)
+
+    def configuration_menu(self):
+    
+        while True:
+            print("** Configuration Menu:\n")
+            print("** 1. Configure Communications")
+            print("** 2. Configure Loction")
+            print("** 3. Configure Encoders")
+            print("** 4. Configure Pointing")
+            print("** 5. Make current configuration the default")
+            print("** 6. Return to Main Menu\n")
+            
+            response = input("** Enter menu number: ")
+            
+            if response == '1':
+                self.communication_config_menu()
+            elif response == '2':
+                self.location_config_menu()
+            elif response == '3':
+                self.encoders_config_menu()
+            elif response == '4':
+                self.pointing_config_menu()
+            elif response == '5':
+                self.cfg.save()
+                print('Current configuration is now the default configuration')
+            elif response == '6':
+                break
+            else:
+                print("Error: %s is not a valid menu option, please try again" % response)
+
+    def communication_config_menu(self):
+    
+        while True:
+            print("\n** Current Communication Configuration:")
+            print("**   host_ip     = %s" % self.cfg.get_host_ip())
+            print("**   serial_port = %s" % self.cfg.get_serial_port())
+            print("**   stc_port    = %s" % self.cfg.get_stc_port())
+            print("**   td_ta_port  = %s" % self.cfg.get_td_ta_port())
+            print("**   td_eq_port  = %s" % self.cfg.get_td_eq_port())
+            print("**   pd_eq_port  = %s" % self.cfg.get_pd_eq_port())
+            print("**   pd_ta_port  = %s" % self.cfg.get_pd_ta_port())
+            print("** Communication Config Menu:\n")
+            print("** 1. Set host ip")
+            print("** 2. Set serial port")
+            print("** 3. Set stc port")
+            print("** 4. Set td_ta port")
+            print("** 5. Set td_eq port")
+            print("** 6. Set pd_eq port")
+            print("** 7. Set pd_ta port")
+            print("** 8. Return to Configuration Menu\n")
+
+            response = input("** Enter menu number: ")
+            
+            if response == '1':
+                self.cfg.set_host_ip(input("** Enter the host ip address: "))
+            elif response == '2':
+                self.cfg.set_serial_port(input("** Enter the serial port: "))
+            elif response == '3':
+                self.cfg.set_stc_port(input("** Enter the STC port: "))
+            elif response == '4':
+                self.cfg.set_td_ta_port(input("** Enter the TD-TA port: "))
+            elif response == '5':
+                self.cfg.set_td_eq_port(input("** Enter the TD-EQ port: "))
+            elif response == '6':
+                self.cfg.set_pd_eq_port(input("** Enter the PD-EQ port: "))
+            elif response == '7':
+                self.cfg.set_pd_ta_port(input("** Enter the PD-TA port: "))
+            elif response == '8':
+                break
+            else:
+                print("Error: %s is not a valid menu option, please try again" % response)
+
+    def location_config_menu(self):
+    
+        while True:
+            print("\n** Current Location Configuration:")
+            print("**   latitude     = %s deg" % str(self.cfg.get_latitude().to_value()))
+            print("**   longitude    = %s deg" % str(self.cfg.get_longitude().to_value()))
+            print("**   elevation    = %s m" % str(self.cfg.get_elevation().to_value()))
+            print("**   pressure     = %s hPa" % str(self.cfg.get_pressure().to_value()))
+            print("**   temperature  = %s C" % str(self.cfg.get_temperature().to_value()))
+            print("**   rel humidity = %s\n" % str(self.cfg.get_rel_humidity()))            
+            print("** Location Config Menu:\n")
+            print("** 1. Set latitude")
+            print("** 2. Set longitude")
+            print("** 3. Set elevation")
+            print("** 4. Set pressure")
+            print("** 5. Set temperature")
+            print("** 6. Set relitive humidity")
+            print("** 7. Return to Configuration Menu\n")
+            
+            response = input("** Enter menu number: ")
+
+            if response == '1':
+                lat = float(input("** Enter the latitude (in deg): "))
+                self.cfg.set_latitude(Latitude(lat*u.deg))
+            elif response == '2':
+                lon = float(input("** Enter the longitude (in deg): "))
+                self.cfg.set_longitude(Longitude(lon*u.deg))
+            elif response == '3':
+                ele = float(input("** Enter the elevation (in m): "))
+                self.cfg.set_elevation(ele*u.m)
+            elif response == '4':
+                p = float(input("** Enter the pressure (in hPa): "))
+                self.cfg.set_pressure(p*u.hPa)
+            elif response == '5':
+                t = float(input("** Enter the temperature (in C): "))
+                self.cfg.set_temperature(t*u.Celsius)
+            elif response == '6':
+                h = float(input("** Enter the relative humidity: "))
+                self.cfg.set_rel_humidity(h)
+            elif response == '7':
+                break
+            else:
+                print("Error: %s is not a valid menu option, please try again" % response)
+
+    def encoders_config_menu(self):
+    
+        while True:
+            print("\n** Current Encoders Configuration:")
+            print("**   theta_npr  = %s" % self.cfg.get_theta_npr())
+            print("**   phi_npr    = %s" % self.cfg.get_phi_npr())
+            print("**   flip_theta = %s" % self.cfg.get_flip_theta())
+            print("**   flip_phi   = %s\n" % self.cfg.get_flip_phi())
+            print("** Encoders Config Menu:\n")
+            print("** 1. Set theta npr")
+            print("** 2. Set phi npr")
+            print("** 3. Toggle flip theta")
+            print("** 4. Toggle flip phi")
+            print("** 5. Return to Configuration Menu\n")
+
+            response = input("** Enter menu number: ")
+            
+            if response == '1':
+                self.cfg.set_theta_npr(int(input("** Enter the theta npr: ")))
+            elif response == '2':
+                self.cfg.set_phi_npr(int(input("** Enter the phi npr: ")))
+            elif response == '3':
+                current = self.cfg.get_flip_theta()
+                if current:
+                    self.cfg.set_flip_theta(False)
+                else:
+                    self.cfg.set_flip_theta(True)
+            elif response == '4':
+                current = self.cfg.get_flip_phi()
+                if current:
+                    self.cfg.set_flip_phi(False)
+                else:
+                    self.cfg.set_flip_phi(True)
+            elif response == '5':
+                break
+            else:
+                print("Error: %s is not a valid menu option, please try again" % response)
+
+    def pointing_config_menu(self):
+    
+        while True:
+            print("\n** Current Pointing Configuration:")
+            print("**   ia   = %s" % self.cfg.get_ia())
+            print("**   ie   = %s" % self.cfg.get_ie())
+            print("**   an   = %s" % self.cfg.get_an())
+            print("**   aw   = %s" % self.cfg.get_aw())
+            print("**   ca   = %s" % self.cfg.get_ca())
+            print("**   npae = %s" % self.cfg.get_npae())
+            print("**   tx   = %s" % self.cfg.get_tx())
+            print("**   tf   = %s\n" % self.cfg.get_tf())
+            print("** Pointing Config Menu:\n")
+            print("** 1. Set ia")
+            print("** 2. Set ie")
+            print("** 3. Set an")
+            print("** 4. Set aw")
+            print("** 5. Set ca")
+            print("** 6. Set npae")
+            print("** 7. Set tx")
+            print("** 8. Set tf")
+            print("** 9. Return to Configuration Menu\n")
+
+            response = input("** Enter menu number: ")
+            
+            if response == '1':
+                self.cfg.set_ia(float(input("** Enter the ia: ")))
+            elif response == '2':
+                self.cfg.set_ie(float(input("** Enter the ie: ")))
+            elif response == '3':
+                self.cfg.set_an(float(input("** Enter the an: ")))
+            elif response == '4':
+                self.cfg.set_aw(float(input("** Enter the aw: ")))
+            elif response == '5':
+                self.cfg.set_ca(float(input("** Enter the ca: ")))
+            elif response == '6':
+                self.cfg.set_npae(float(input("** Enter the npae: ")))
+            elif response == '7':
+                self.cfg.set_tx(float(input("** Enter the tx: ")))
+            elif response == '8':
+                self.cfg.set_tf(float(input("** Enter the tf: ")))
+            elif response == '9':
+                break
+            else:
+                print("Error: %s is not a valid menu option, please try again" % response)
+
+    def deploy(self):
+        if self.state != 'UNDEPLOYED':
+            print("Can't deploy PushTo: current state is %s" % self.state)
+            return
+
+        """
+        Start stellarium first
+        """
+        self.stellarium = StellariumTC.setup(self.cfg, self.ctx)
+        self.stellarium.handshake()
+        self.stellarium.start()
+
+        """
+        Start site second
+        """
+        self.site = Site.setup(self.cfg, self.ctx)
+        self.site.connect()
+        self.site.start()
+
+        """
+        Start telescope third
+        """
+        self.telescope = Telescope.setup(self.cfg, self.ctx)
+        self.telescope.start()
+        
+        self.state = 'RUNNING'
+
+    def undeploy(self):
+        print('Ending all processes, good-bye')
+        if self.state == 'RUNNING':
+            self.telescope.close() # this flushes everything downstream
+        self.ctx.destroy()
+
+        self.state = 'UNDEPLOYED'
+
+
+if __name__ == '__main__':
+    import argparse
+    import logging
+    from zmq.log.handlers import PUBHandler
+
+    "Setup argument parser"
+    parser = argparse.ArgumentParser(description='PushTo User Interface')
+    parser.add_argument('--config_file', default='pushto_default.cfg',
+                        help='File containing default configuration')
+    
+    args = parser.parse_args()
+
+    ctx = zmq.Context()
+    zmq_log_handler = PUBHandler('tcp://127.0.0.1:12345')
+    zmq_log_handler.setFormatter(logging.Formatter(fmt='[%(levelname)-5s] (%(threadName)-10s) %(message)s'))
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(zmq_log_handler)
+
+    # in another window the log can be watched with
+    #   python -m zmq.log tcp://127.0.0.1:12345
+
+    ui = uInterface(args.config_file, ctx=ctx);
+    ui.splash()
+    ui.main_menu()

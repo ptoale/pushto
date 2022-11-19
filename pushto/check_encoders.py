@@ -1,0 +1,67 @@
+#!/usr/bin/env python
+"""
+Debugging encoder counts to telescope attitude
+
+"""
+import logging
+import zmq
+from telescope import Telescope
+from util import counts_to_telescope
+from config import Configuration
+from messages import Message
+
+
+
+if __name__ == '__main__':
+    import argparse
+    
+    "Setup argument parser"
+    parser = argparse.ArgumentParser(description='Telescope Server')
+    parser.add_argument('--port', help='serial port connected to arduino')    
+    parser.add_argument('-d', action='store_true', default=False,
+                        help='enable debug logging')
+    args = parser.parse_args()
+
+    "Configure the logging"
+    level = logging.INFO
+    if args.d:
+        level = logging.DEBUG
+    logging.basicConfig(
+        level=level,
+        format='[%(levelname)-5s] (%(threadName)-10s) %(message)s',
+    )
+
+    "Use default configuration"
+    cfg = Configuration('../pushto_default.cfg')
+
+    "Setup addresses"
+    td_ta_pub_address = "tcp://%s:%s" % (cfg.get_host_ip(), cfg.get_td_ta_port())
+
+    "Configure zmq"
+    ctx = zmq.Context()
+    subs = ctx.socket(zmq.SUB)
+    subs.subscribe("")
+    subs.connect(td_ta_pub_address)
+
+    "Configure serial port"
+    if args.port:
+        cfg.set_serial_port(args.port)
+
+    "Create the server and start it"
+    telescope = Telescope.setup(cfg, ctx)
+    telescope.start()
+    
+    "Sit here and read the output of the server until ^C"
+    try:
+        while True:
+            data = subs.recv_json()
+            logging.debug("On SUB: %s" % data)
+            msg = Message.from_json(data)
+            print(msg)
+    except KeyboardInterrupt:
+        logging.info('keyboard interupt')
+        
+    "Clean up"
+    telescope.close()
+    subs.close()
+    ctx.destroy()
