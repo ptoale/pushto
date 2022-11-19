@@ -17,7 +17,11 @@ setuptools.setup(
     },
     license='MIT',
     packages=['pushto'],
-    scripts=['scripts/pushto', 'scripts/fake_arduino', 'scripts/moni_listener'],
+    scripts=['scripts/pushto', 
+             'scripts/fake_arduino', 
+             'scripts/moni_listener',
+             'scripts/check_encoders',
+             'scripts/check_stellarium'],
     install_requires=['astropy', 'numpy', 'pyserial', 'requests', 'zmq'],
     package_data={'pushto': ['pushto_default.cfg']},
 )
