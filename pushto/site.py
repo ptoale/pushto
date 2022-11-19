@@ -64,7 +64,7 @@ class Location(object):
         if utc is None: utc = Time.now()
         altaz = AltAz(obstime=utc, location=self.location, 
                       pressure=self.pres, temperature=self.temp,
-                      relative_humidity=self.relh, obswl=500*u.nm)
+                      relative_humidity=self.relh, obswl=550*u.nm)
         icrs = SkyCoord(alt=alt*u.deg, az=azi*u.deg, frame=altaz).transform_to('icrs')
     
         return icrs.ra.to_value()*24/360, icrs.dec.to_value()
@@ -87,7 +87,7 @@ class Location(object):
         if utc is None: utc = Time.now()
         altaz = AltAz(obstime=utc, location=self.location, 
                       pressure=self.pres, temperature=self.temp,
-                      relative_humidity=self.relh, obswl=500*u.nm)
+                      relative_humidity=self.relh, obswl=550*u.nm)
         hori = SkyCoord(ra=(ra*360/24)*u.deg, dec=dec*u.deg, frame='icrs').transform_to(altaz)
     
         return hori.az.to_value(), hori.alt.to_value()
