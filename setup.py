@@ -20,6 +20,7 @@ setuptools.setup(
     entry_points={
         'console_scripts': ['pushto=pushto.ui:main']
     },
+    scripts=['scripts/fake_arduino', 'scripts/moni_listner'],
     install_requires=['astropy', 'numpy', 'pyserial', 'requests', 'zmq'],
     package_data={'pushto': ['pushto_default.cfg']},
 )
