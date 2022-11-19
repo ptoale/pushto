@@ -6,14 +6,14 @@ with open("README.md", "r", encoding="utf-8") as fh:
 setuptools.setup(
     name='pushto',
     version='1.1.1',
-    author='PToale',
+    author='ptoale',
     author_email='ptoale@gmail.com',
     description='Push-to telescope',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url='https://github.com/mike-huls/toolbox',
+    url='https://github.com/ptoale/pushto.git',
     project_urls = {
-        "Bug Tracker": "https://github.com/mike-huls/toolbox/issues"
+        "Bug Tracker": "https://github.com/ptoale/pushto/issues"
     },
     license='MIT',
     packages=['pushto'],
