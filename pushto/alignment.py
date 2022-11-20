@@ -26,22 +26,22 @@ Horizontal coordinates: aligned with zenith and horizon
 import numpy as np
 
 
-def vec_from_angles(theta, phi):
+def vec_from_angles(phi, theta):
     """
     Create a direction unit vector from elevation and azimuthal angles.
 
-    :param theta: elevation angle, in degrees
-    :type theta: float
     :param phi: azimuthal angle, in degrees
     :type phi: float
+    :param theta: elevation angle, in degrees
+    :type theta: float
 
     :return: unit direction vector
     :rtype: :obj:`np.ndarray`
 
     """
-    theta = np.radians(theta)
     phi = np.radians(phi)
-        
+    theta = np.radians(theta)
+
     "direction vector"
     return np.array([np.cos(theta)*np.cos(phi), np.cos(theta)*np.sin(phi), np.sin(theta)])
 
@@ -53,7 +53,7 @@ def angles_from_vec(v):
     :param v: direction vector
     :type v: :obj:`np.ndarray`
 
-    :return: elevation angle, azimuthal angle in degrees
+    :return: azimuthal angle, elevation angle in degrees
     :rtype: list
 
     """
@@ -64,7 +64,7 @@ def angles_from_vec(v):
     while phi < 0:
         phi += 2*np.pi
         
-    return np.degrees(theta), np.degrees(phi)
+    return np.degrees(phi), np.degrees(theta)
 
 
 class Aligner(object):
@@ -87,19 +87,19 @@ class Aligner(object):
         self.corr = None
         self.reset()
         
-    def add_star(self, theta, phi, alt, azi, weight=1):
+    def add_star(self, phi, theta, azi, alt, weight=1):
         """
         Add an alignment star. Rotation matrix is calculated for every added
         star after the second one.
         
-        :param theta: polar angle of telescope in degrees
-        :type theta: float
         :param phi: azimuthal angle of telescope in degrees
         :type phi: float
-        :param alt: altitude in degrees
-        :type alt: float
+        :param theta: polar angle of telescope in degrees
+        :type theta: float
         :param azi: azimuth in degrees
         :type azi: float
+        :param alt: altitude in degrees
+        :type alt: float
         :param weight: weight of data point, defaults to 1
         :type weight: float
 
@@ -108,8 +108,8 @@ class Aligner(object):
         if self.n_stars and len(self.stars) == self.n_stars:
             return
 
-        v1 = vec_from_angles(theta, phi)
-        v2 = vec_from_angles(alt, azi)
+        v1 = vec_from_angles(phi, theta)
+        v2 = vec_from_angles(azi, alt)
         self.stars.append([v1, v2, weight])
         self.update()
 
@@ -159,37 +159,37 @@ class Aligner(object):
         self.R_chi2 = l_opt
         self.corr = ph
 
-    def telescope_to_horizontal(self, theta, phi):
+    def telescope_to_horizontal(self, phi, theta):
         """
         Transform from telescope to horizontal.
         
-        :param theta: elevation angle in degrees
-        :type theta: float
         :param phi: azimuthal angle in degrees
         :type phi: float
-            
-        :return: altitude and azimuth in degrees
+        :param theta: elevation angle in degrees
+        :type theta: float
+
+        :return: azimuth and altitude in degrees
         :rtype: list(float)
 
         """
-        v1 = vec_from_angles(theta, phi)
+        v1 = vec_from_angles(phi, theta)
         v2 = np.squeeze(np.asarray(np.matmul(self.R, v1)))
         return angles_from_vec(v2)
 
-    def horizontal_to_telescope(self, alt, azi):
+    def horizontal_to_telescope(self, azi, alt):
         """
         Transform from horizontal to telescope.
         
-        :param alt: altitude in degrees
-        :type alt: float
         :param azi: azimuth in degrees
         :type azi: float
-            
+        :param alt: altitude in degrees
+        :type alt: float
+
         :return: elevation and azimuthal angles in degrees
         :rtype: list(float)
 
          """
-        v1 = vec_from_angles(alt, azi)        
+        v1 = vec_from_angles(azi, alt)
         v2 = np.matmul(self.R_inv, v1)
         return angles_from_vec(v2)
 
@@ -210,24 +210,24 @@ if __name__ == '__main__':
     e3 /= np.linalg.norm(e3)
     
     "get the angles"
-    theta1, phi1 = angles_from_vec(t1)
-    theta2, phi2 = angles_from_vec(t2)
-    theta3, phi3 = angles_from_vec(t3)
-    alt1, azi1 = angles_from_vec(e1)
-    alt2, azi2 = angles_from_vec(e2)
-    alt3, azi3 = angles_from_vec(e3)
+    phi1, theta1 = angles_from_vec(t1)
+    phi2, theta2 = angles_from_vec(t2)
+    phi3, theta3 = angles_from_vec(t3)
+    azi1, alt1 = angles_from_vec(e1)
+    azi2, alt2 = angles_from_vec(e2)
+    azi3, alt3 = angles_from_vec(e3)
 
     "create the aligner and add the stars"    
     aligner = Aligner()
-    aligner.add_star(theta1, phi1, alt1, azi1)
-    aligner.add_star(theta2, phi2, alt2, azi2)
+    aligner.add_star(phi1, theta1, azi1, alt1)
+    aligner.add_star(phi2, theta2, azi2, alt2)
     #aligner.add_star(theta3, phi3, alt3, azi3)
 
     "check the results"
-    c_alt1, c_azi1 = aligner.telescope_to_horizontal(theta1, phi1)
-    c_e1 = vec_from_angles(c_alt1, c_azi1)
-    c_alt2, c_azi2 = aligner.telescope_to_horizontal(theta2, phi2)
-    c_e2 = vec_from_angles(c_alt2, c_azi2)
+    c_alt1, c_azi1 = aligner.telescope_to_horizontal(phi1, theta1)
+    c_e1 = vec_from_angles(c_azi1, c_alt1)
+    c_alt2, c_azi2 = aligner.telescope_to_horizontal(phi2, theta2)
+    c_e2 = vec_from_angles(c_azi2, c_alt2)
     #c_alt3, c_azi3 = aligner.telescope_to_horizontal(theta3, phi3)
     #c_e3 = vec_from_angles(c_alt3, c_azi3)
     d1 = np.degrees(np.arccos(np.dot(e1, c_e1)))*60

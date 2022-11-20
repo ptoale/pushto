@@ -24,7 +24,7 @@ minimizing the cost function
 
 .. math::
 
-   L = \frac{1}{2} \sum_{i=1}^N \left|\vec{y}_i - R\vec{x}_i\right|^2
+   L = \frac{1}{2} \sum_{i=1}^N |\vec{y}_i - R \vec{x}_i|^2
 
 where :math:`N` is the number of data points (stars). The data is combined in
 a matrix defined by

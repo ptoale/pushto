@@ -73,8 +73,8 @@ if __name__ == '__main__':
                 "get azi and alt from stellarium rpc"
                 stel_altaz = rpc.get_selected_alt_az()
                 
-                r1 = vec_from_angles(stel_altaz[0], stel_altaz[1])
-                r2 = vec_from_angles(alt, azi)
+                r1 = vec_from_angles(stel_altaz[1], stel_altaz[0])
+                r2 = vec_from_angles(azi, alt)
                 phi = 3600*np.degrees(np.arccos(np.dot(r1, r2)))
                 print(str(calib))
                 print('     RPC: {:10.6f}, {:10.6f}'.format(stel_altaz[0], stel_altaz[1]))

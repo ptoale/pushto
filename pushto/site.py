@@ -213,7 +213,7 @@ class Site(threading.Thread):
                     """
                     phi = msg.phi
                     theta = msg.theta
-                    alt, azi = self.aligner.telescope_to_horizontal(theta, phi)
+                    alt, azi = self.aligner.telescope_to_horizontal(phi, theta)
                     ra, dec = self.location.horizontal_to_equatorial(azi, alt)
                     msg.time = Time.now().iso
                     msg.alt = alt
@@ -235,9 +235,9 @@ class Site(threading.Thread):
                 msg = Message.from_json(calib_msg)
 
                 azi, alt = self.location.equatorial_to_horizontal(msg.ra, msg.dec, Time(msg.time, format='iso'))                
-                self.aligner.add_star(last_data['theta'], last_data['phi'], alt, azi)                    
+                self.aligner.add_star(last_data['phi'], last_data['theta'], azi, alt)
 
-                theta, phi = self.aligner.horizontal_to_telescope(alt, azi)
+                theta, phi = self.aligner.horizontal_to_telescope(azi, alt)
                 msg.azi = azi
                 msg.alt = alt
                 msg.theta = theta
