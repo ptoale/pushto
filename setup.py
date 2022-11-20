@@ -22,6 +22,6 @@ setuptools.setup(
              'scripts/moni_listener',
              'scripts/check_encoders',
              'scripts/check_stellarium'],
-    install_requires=['astropy', 'numpy', 'pyserial', 'requests', 'zmq'],
+    install_requires=['astropy', 'numpy', 'pyserial', 'requests', 'pyzmq'],
     package_data={'pushto': ['pushto_default.cfg']},
 )
