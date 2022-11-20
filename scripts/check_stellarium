@@ -30,7 +30,7 @@ if __name__ == '__main__':
     location = Location.setup(cfg)
 
     "Setup the address/ports"
-    data_sub_address  = "tcp://%s:%s" % (cfg.get_host_ip(), cfg.get_td_eq_port())
+    data_sub_address = "tcp://%s:%s" % (cfg.get_host_ip(), cfg.get_td_eq_port())
     calib_pub_address = "tcp://%s:%s" % (cfg.get_host_ip(), cfg.get_pd_eq_port())
 
     "Create the rpc"

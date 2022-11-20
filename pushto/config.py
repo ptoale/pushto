@@ -36,7 +36,6 @@ Configuration stuff
     - tf:           tube flexure term proportional to cos(el)
 
 """
-import os
 import logging
 from configparser import ConfigParser
 import importlib.resources
@@ -45,6 +44,7 @@ import astropy.units as u
 from astropy.coordinates import EarthLocation, Latitude, Longitude
 
 DEFAULT_CONFIG_FILE = importlib.resources.path('pushto', 'pushto_default.cfg')
+
 
 class Configuration(object):
     """
@@ -92,7 +92,7 @@ class Configuration(object):
         >>> cfg.set_host_ip('127.0.0.1')
         """
         logging.debug('setting host_ip to %s' % str(value))
-        self.config['COMMUNICATION']['host_ip'] =  value
+        self.config['COMMUNICATION']['host_ip'] = value
 
     def get_serial_port(self):
         """
@@ -213,7 +213,6 @@ class Configuration(object):
         """
         logging.debug('setting PD-TA port to %s' % value)
         self.config['COMMUNICATION']['pd_ta_port'] = value
-
 
     """
     Location info
@@ -372,7 +371,6 @@ class Configuration(object):
         logging.debug('setting relative humidity to %s' % str(humidity))
         self.config.set('LOCATION', 'rel_humidity', str(humidity))   
 
-
     """
     Encoder info
     """
@@ -455,8 +453,7 @@ class Configuration(object):
         """
         logging.debug('setting flip_phi to %s' % str(flip_phi))
         self.config['ENCODERS']['flip_phi'] = str(flip_phi)
-        
-    
+
     """
     Pointing info
     """
@@ -641,7 +638,7 @@ class Configuration(object):
         >>> cfg.set_pointing_model([0, 0, 0, 0, 0, 0, 0, 0])
         """
         if len(params) != 8:
-            logging.warn('Pointing model must be a list of 8 floats')
+            logging.warning('Pointing model must be a list of 8 floats')
             return
         
         logging.debug('setting pointing model to %s' % str(params))

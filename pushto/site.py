@@ -21,6 +21,7 @@ from pushto.telescope import Telescope
 from pushto.alignment import Aligner
 from pushto.messages import Message
 
+
 class Location(object):
     """
     Location object.
@@ -61,7 +62,8 @@ class Location(object):
         :rtype: list(floats)
         
         """
-        if utc is None: utc = Time.now()
+        if utc is None:
+            utc = Time.now()
         altaz = AltAz(obstime=utc, location=self.location, 
                       pressure=self.pres, temperature=self.temp,
                       relative_humidity=self.relh, obswl=550*u.nm)
@@ -84,7 +86,8 @@ class Location(object):
         :rtype: list(floats)
         
         """
-        if utc is None: utc = Time.now()
+        if utc is None:
+            utc = Time.now()
         altaz = AltAz(obstime=utc, location=self.location, 
                       pressure=self.pres, temperature=self.temp,
                       relative_humidity=self.relh, obswl=550*u.nm)
@@ -94,14 +97,15 @@ class Location(object):
     
     @classmethod
     def setup(cls, cfg):
-        lat  = cfg.get_latitude()
-        lon  = cfg.get_longitude()
+        lat = cfg.get_latitude()
+        lon = cfg.get_longitude()
         elev = cfg.get_elevation()
         pres = cfg.get_pressure()
         temp = cfg.get_temperature()
         relh = cfg.get_rel_humidity()
         return Location(lat, lon, elev, pres, temp, relh)
-        
+
+
 class Site(threading.Thread):
     """
     PushTo class
@@ -161,7 +165,6 @@ class Site(threading.Thread):
         self.td_eq_socket.close(linger=1)
         self.pd_ta_socket.close(linger=1)
 
-
     def connect(self):
         """
         Bind and connect the sockets.
@@ -185,7 +188,6 @@ class Site(threading.Thread):
         last_data = None
         N = 10  # with T_arduino=50ms --> 500ms   Stellarium is smooth with N=10!
         n = 0
-        time = Time.now()
         while True:
             "Poll the poller for incoming messages"
             socks = dict(poller.poll())
@@ -222,7 +224,7 @@ class Site(threading.Thread):
                     "Store for alignment"
                     last_data = msg.to_json()
                     
-                    if (n%N) == 0:
+                    if (n % N) == 0:
                         "Send RA, Dec to stellarium"
                         self.td_eq_socket.send_json(msg.to_json())
                         logging.info("On data PUB: %s" % msg.to_json())
@@ -259,6 +261,7 @@ class Site(threading.Thread):
    
         return Site(td_ta_address, td_eq_address, pd_eq_address, pd_ta_address, 
                     location, ctx)
+
 
 if __name__ == '__main__':
     import argparse
@@ -312,7 +315,7 @@ if __name__ == '__main__':
         while True:
             pass
     except KeyboardInterrupt:
-        logging.info('keyboard interupt')
+        logging.info('keyboard interrupt')
         
     telescope.close()
     time.sleep(1)    

@@ -16,7 +16,7 @@ coordinates, and to communicate those coordinates the STC.
 
 The main classes include proxies for both the serial port connection to
 the arduino and the socket connection to the STC.
-The control module is responsible for communication with both proxie classes,
+The control module is responsible for communication with both proxy classes,
 managing alignment data, and translating between 3 coordinate systems.
 
 1. the telescope attitude
@@ -24,7 +24,7 @@ managing alignment data, and translating between 3 coordinate systems.
 3. the J2000 equatorial RA-Dec system
 
 Step 2 requires telescope alignment with at least 2 stars. The STC can send
-slew commands to a telescope, consiting with the coordinates of a selected
+slew commands to a telescope, consisting of the coordinates of a selected
 object. The slew command currently must be initiated from within Stellarium
 by clicking on buttons. The Stellarium Remote Control (SRC) rpc api does allow
 for some remote execution and perhaps we could trigger alignment data internally.

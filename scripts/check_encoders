@@ -5,10 +5,9 @@ Debugging encoder counts to telescope attitude
 """
 import logging
 import zmq
-from telescope import Telescope
-from util import counts_to_telescope
-from config import Configuration
-from messages import Message
+from pushto.telescope import Telescope
+from pushto.config import Configuration
+from pushto.messages import Message
 
 if __name__ == '__main__':
     import argparse
@@ -57,7 +56,7 @@ if __name__ == '__main__':
             msg = Message.from_json(data)
             print(msg)
     except KeyboardInterrupt:
-        logging.info('keyboard interupt')
+        logging.info('keyboard interrupt')
         
     "Clean up"
     telescope.close()

@@ -1,6 +1,6 @@
 # PushTo ReadMe
 
-<img src="docs/source/_static/AD8-Mount.jpeg" width="500">
+<img src="docs/source/_static/AD8-Mount.jpeg" width="500" alt="picture of telescope">
 
 PushTo synchronizes a push-to telescope with Stellarium, allowing Stellarium to act
 as a high-precision finder. The goal is to achieve an overall pointing accuracy of
@@ -112,7 +112,7 @@ counts per revolution of the telescope axes. There are three pieces of informati
 3. The gearing ratios, which may be different for the two axes
 
 These data can be configured through the UI. Once angles are calculated, they are cast
-as proper spherical angles: theta=[-90:+90], phi=[0,360]. This angles can then by corrected
+as proper spherical angles: theta=[-90:+90], phi=[0,360]. This angles can then be corrected
 by applying a pre-determined pointing model to account for mount errors.
 
 #### Aligning the Telescope
@@ -201,7 +201,7 @@ and time.
 
     - Uses the delta T calculation of Espenak and Meeus (2006) to translate between TT and UT.
 
-    - Can be configured with pressure and temperature data to calculate atomospheric
+    - Can be configured with pressure and temperature data to calculate atmospheric
 refraction. Default settings are:
 
         - pressure = 1013 mbar

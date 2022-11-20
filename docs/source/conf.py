@@ -22,21 +22,8 @@ extensions = ['sphinx.ext.autodoc']
 templates_path = ['_templates']
 exclude_patterns = []
 
-
-
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = 'classic'
-#html_theme = 'alabaster'
-#html_sidebars = {
-#    '**': [
-#        'about.html',
-#        'navigation.html',
-#        'relations.html',
-#        'searchbox.html',
-#        'donate.html',
-#    ]
-#}
-
 html_static_path = ['_static']

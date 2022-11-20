@@ -8,12 +8,9 @@ Provides:
     - StellariumTC
     - StellariumRPC
 
-    
 """
 import logging
 import socket
-import select
-import struct
 import threading
 #
 import requests
@@ -54,27 +51,28 @@ def stc_encode(utc, ra, dec):
     utc = Time(utc, format='iso')
     timestamp = int(1e6*utc.unix)
         
-    "convert ra and dec into interger representation"
-    ra_int  = int(ra*2147483648/12.0)
+    "convert ra and dec into integer representation"
+    ra_int = int(ra*2147483648/12.0)
     dec_int = int(dec*1073741824/90.0)
 
     size = 24
-    type = 0
+    mtype = 0
     status = 0
 
     "create and pack the bytearray"
     data = bytearray(24)
     data[ 0: 2] = int(size).to_bytes(2, 'little')
-    data[ 2: 4] = int(type).to_bytes(2, 'little')
+    data[ 2: 4] = int(mtype).to_bytes(2, 'little')
     data[ 4:12] = int(timestamp).to_bytes(8, 'little')
     data[12:16] = ra_int.to_bytes(4, 'little')
     data[16:20] = dec_int.to_bytes(4, 'little', signed=True)
     data[20:24] = int(status).to_bytes(4, 'little')     
 
-    logging.debug('stc_encode: %s %s %s %s %s %s' % (size, type, timestamp, ra_int, dec_int, status))
+    logging.debug('stc_encode: %s %s %s %s %s %s' % (size, mtype, timestamp, ra_int, dec_int, status))
     logging.debug('stc_encode: %s' % str(data))
 
     return data
+
 
 def stc_decode(data):
     """
@@ -82,7 +80,7 @@ def stc_decode(data):
     This will always be a 'Slew' command.
         
     :param data: data read from Stellarium socket
-    :type data: bytearray
+    :type data: bytes
         
     :return: (utc, ra, dec)
     :rtype: list(str, float, float)
@@ -98,20 +96,20 @@ def stc_decode(data):
     
     "Unpack the bytearray"
     size    = int.from_bytes(data[ 0: 2], 'little')
-    type    = int.from_bytes(data[ 2: 4], 'little')
+    mtype   = int.from_bytes(data[ 2: 4], 'little')
     time    = int.from_bytes(data[ 4:12], 'little')
     ra_int  = int.from_bytes(data[12:16], 'little')
     dec_int = int.from_bytes(data[16:20], 'little', signed=True)
 
     logging.debug('stc_decode: %s' % str(data))
-    logging.debug('stc_decode: %s %s %s %s %s' % (size, type, time, ra_int, dec_int))
+    logging.debug('stc_decode: %s %s %s %s %s' % (size, mtype, time, ra_int, dec_int))
         
     "The time is microseconds since epoch, convert it to utc"
     utc = Time(time/1e6, format='unix').iso
         
     "Now convert the ra_int and dec_int into angles"
-    ra  =  ra_int*12.0/2147483648 # in hours
-    dec = dec_int*90.0/1073741824 # in deg
+    ra = ra_int*12.0/2147483648    # in hours
+    dec = dec_int*90.0/1073741824  # in deg
     if dec > 180:
         dec -= 360
 
@@ -276,9 +274,9 @@ class StellariumTC(threading.Thread):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.sock.bind(self.serverAddress)
-        self.sock.settimeout(600) #Throws a timeout exception if connections are idle for 10 minutes
-        self.sock.listen(1)       #set the socket to listen, now it's a server!
-        self.connected = False
+        self.sock.settimeout(600)  # Throws a timeout exception if connections are idle for 10 minutes
+        self.sock.listen(1)        # set the socket to listen, now it's a server!
+        self.connection = None
 
         "configure the zmq sockets"
         self.data_sub_address = data_sub_address
@@ -300,15 +298,13 @@ class StellariumTC(threading.Thread):
         try:
             while True:
                 logging.debug('attempting handshake')
-                self.connection, self.clientAddress = self.sock.accept()
-                if self.connection != None:
-                    self.connected = True
+                self.connection, clientAddress = self.sock.accept()
+                if self.connection is None:
                     logging.debug('connected to Stellarium')
                     break
         except Exception as e:
             logging.error("failed handshake with Stellarium: %s" % e)
-    
-    
+
     def close(self):
         """
         Close connections and sockets.
@@ -358,27 +354,28 @@ class StellariumTC(threading.Thread):
                 msg = AlignMessage(time=utc, ra=ra, dec=dec)
                 logging.debug('PUB: %s' % msg.to_json())
                 self.calib_pub_socket.send_json(msg.to_json())
-    
 
     @classmethod
     def setup(cls, cfg, ctx=None):
         """
-        Convence method for creating a StellariumProxy object based on a Configuration object
+        Convenience method for creating a StellariumTC object based on a Configuration object
         
         :param cfg: the configuration object to use
         :type cfg: :obj:`Configuration`
-        
-        :return: the stellarium proxy
-        :rtype: :obj:`StellariumProxy`
+        :param ctx: the zmq context, optional
+        :type ctx: :obj:`zmq.Context` or None
+
+        :return: the stellarium TC
+        :rtype: :obj:`StellariumTC`
         """        
         control_pub_address = "tcp://%s:%s" % (cfg.get_host_ip(), cfg.get_td_eq_port())
         stellar_pub_address = "tcp://%s:%s" % (cfg.get_host_ip(), cfg.get_pd_eq_port())
 
-        return StellariumTC(stel_host = cfg.get_host_ip(), 
-                            stel_port = cfg.get_stc_port(), 
-                            data_sub_address = control_pub_address, 
-                            calib_pub_address = stellar_pub_address, 
-                            ctx = ctx)
+        return StellariumTC(stel_host=cfg.get_host_ip(),
+                            stel_port=cfg.get_stc_port(),
+                            data_sub_address=control_pub_address,
+                            calib_pub_address=stellar_pub_address,
+                            ctx=ctx)
 
    
 if __name__ == '__main__':
@@ -397,7 +394,7 @@ if __name__ == '__main__':
     ctx = zmq.Context()
     stc = StellariumTC.setup(cfg, ctx)
 
-    data_sub_address  = "tcp://%s:%s" % (cfg.get_host_ip(), cfg.get_td_eq_port())
+    data_sub_address = "tcp://%s:%s" % (cfg.get_host_ip(), cfg.get_td_eq_port())
     calib_pub_address = "tcp://%s:%s" % (cfg.get_host_ip(), cfg.get_pd_eq_port())
     
     data_pub_socket = ctx.socket(zmq.PUB)
@@ -433,7 +430,7 @@ if __name__ == '__main__':
                 logging.info("Receiving: %s" % msg)
 
     except KeyboardInterrupt:
-        logging.info('keyboard interupt')
+        logging.info('keyboard interrupt')
     
     "Shut it down"
     msg = CmdMessage(cmd='stop')

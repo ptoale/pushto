@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 """
 Interface to telescope
-    - Handles communication with Arduino connected to serial port, using the :mod:`pyserial` package to create a threaded serial reader
+    - Handles communication with Arduino connected to serial port, using the :mod:`pyserial` package to create a
+      threaded serial reader
     - Transforms data from encoder counts to raw telescope attitude to corrected telescope attitude
     - Publishes data to a :mod:`zmq` PUB socket
 
@@ -15,7 +16,8 @@ import sys
 import logging
 #
 import numpy as np
-import serial, serial.threaded
+import serial
+import serial.threaded
 import zmq
 #
 from pushto.messages import DataMessage, CmdMessage
@@ -34,6 +36,7 @@ class SerialHandler(serial.threaded.LineReader):
         self.pm = pm
         self.pub_address = pub_address
         self.ctx = ctx
+        self.pubs = None
         
     def __call__(self):
         """
@@ -55,16 +58,15 @@ class SerialHandler(serial.threaded.LineReader):
     def connection_lost(self, exc):
         logging.debug('closed serial port to arduino', exc_info=exc)
 
-
     def handle_line(self, line):
         """
         Handle a received line (it's a string!)
         """
-        logging.debug('got data: ' + line)
         if self.pubs is not None:
             alist = line.split()
             if len(alist) == 5:
                 [time, phi_cnt, theta_cnt, phi_err, theta_err] = alist
+                logging.debug('got data: %s %s %s %s %s' % (time, phi_cnt, theta_cnt, phi_err, theta_err))
                 phi_raw, theta_raw = self.enc.convert(int(phi_cnt), int(theta_cnt))
                 phi, theta = self.pm.apply(phi_raw, theta_raw)
                 msg = DataMessage(time=time, phi_cnt=phi_cnt, theta_cnt=theta_cnt, 
@@ -83,19 +85,17 @@ class SerialHandler(serial.threaded.LineReader):
         self.pubs.send_json(msg.to_json())  # poison pill closes everything else
         self.pubs.close(linger=1)
 
+
 class Telescope(object):
     """
-    Handles the threaded serial reader and publishes the encoder data to a zmq 
-    PUB socket.
-   
+    Handles the threaded serial reader and publishes the encoder data to a zmq PUB socket.
+
     :param port: serial port that arduino is connected to
     :type port: str
     :param pub_address: address to publish data to
     :type pub_address: str
-    :param baud: baud rate of serial port, optional [9600]
-    :type baud: int
-    :param zmq_ctx: the zmq context to use, optional [None]
-    :type zmq_ctx: :obj:`zmq.Context`
+    :param ctx: the zmq context to use, optional [None]
+    :type ctx: :obj:`zmq.Context`
 
     >>> scope = Telescope('/dev/cu.usbmodem143301', 'tcp://127.0.0.1:10011')
     >>> scope.start()
@@ -119,6 +119,7 @@ class Telescope(object):
         self.pub_address = pub_address
         self.cfg = cfg
         self.ctx = ctx
+        self.protocol = None
         self.reader = None
 
     def start(self):
@@ -135,8 +136,7 @@ class Telescope(object):
         enc.config(self.cfg)
         pm = PointingModel()
         pm.config(self.cfg)
-        self.protocol = SerialHandler(enc, pm, 
-                                      self.pub_address, self.ctx)
+        self.protocol = SerialHandler(enc, pm, self.pub_address, self.ctx)
 
         "Open the serial port"
         try:
@@ -161,11 +161,13 @@ class Telescope(object):
     @classmethod
     def setup(cls, cfg, ctx=None):
         """
-        Convence method for creating a Telescope object based on a Configuration object
+        Convenience method for creating a Telescope object based on a Configuration object
         
         :param cfg: the configuration object to use
         :type cfg: :obj:`Configuration`
-        
+        :param ctx: the zmq context, optional
+        :type ctx: :obj:`zmq.Context` or None
+
         :return: the telescope
         :rtype: :obj:`Telescope`
         """
@@ -193,9 +195,9 @@ class Encoders(object):
     """
 
     def __init__(self, phi_npr=0, theta_npr=0, flip_phi=False, flip_theta=False):
-        self.phi_npr    = phi_npr
-        self.theta_npr  = theta_npr
-        self.flip_phi   = flip_phi
+        self.phi_npr = phi_npr
+        self.theta_npr = theta_npr
+        self.flip_phi = flip_phi
         self.flip_theta = flip_theta
         
     def config(self, cfg):
@@ -209,9 +211,9 @@ class Encoders(object):
         >>> encoders.config(cfg)
         >>> phi, theta = encoders.convert(1200, 1200)
         """
-        self.phi_npr    = cfg.get_phi_npr()
-        self.theta_npr  = cfg.get_theta_npr()
-        self.flip_phi   = cfg.get_flip_phi()
+        self.phi_npr = cfg.get_phi_npr()
+        self.theta_npr = cfg.get_theta_npr()
+        self.flip_phi = cfg.get_flip_phi()
         self.flip_theta = cfg.get_flip_theta()
         
     def convert(self, phi_cnt, theta_cnt):
@@ -227,7 +229,7 @@ class Encoders(object):
         :rtype: list(float)
         """
 
-        "Reverse the sense of the counters if neccessary"
+        "Reverse the sense of the counters if necessary"
         if self.flip_phi:
             phi_cnt *= -1
         if self.flip_theta:
@@ -258,6 +260,7 @@ class Encoders(object):
             phi = (phi + 180) % 360
 
         return phi, theta
+
 
 class PointingModel(object):
     """
@@ -307,14 +310,14 @@ class PointingModel(object):
         >>> pm.config(cfg)
         >>> phi, theta = pm.apply(180, 45)
         """
-        self.ia   = cfg.get_ia()
-        self.ie   = cfg.get_ie()
-        self.an   = cfg.get_an()
-        self.aw   = cfg.get_aw()
-        self.ca   = cfg.get_ca()
+        self.ia = cfg.get_ia()
+        self.ie = cfg.get_ie()
+        self.an = cfg.get_an()
+        self.aw = cfg.get_aw()
+        self.ca = cfg.get_ca()
         self.npae = cfg.get_npae()
-        self.tx   = cfg.get_tx()
-        self.tf   = cfg.get_tf()
+        self.tx = cfg.get_tx()
+        self.tf = cfg.get_tf()
         
     def apply(self, phi, theta):
         """
@@ -346,7 +349,7 @@ class PointingModel(object):
         elif phi < 0:
             azi += 360*(1-np.fix(azi/360))
 
-        "elevation corretions"
+        "elevation corrections"
         de = self.ie
         de -= self.an * np.cos(phi_r)
         de += self.aw * np.sin(phi_r)
@@ -433,7 +436,7 @@ if __name__ == '__main__':
             data = subs.recv_json()
             logging.info("On SUB: %s" % data)
     except KeyboardInterrupt:
-        logging.info('keyboard interupt')
+        logging.info('keyboard interrupt')
         
     "Clean up"
     telescope.close()

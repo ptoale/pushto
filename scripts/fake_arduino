@@ -13,22 +13,22 @@ this program. The other must be given to the ArduinoServer object. Put this is t
 > ^Z
 > bg
 
-Now start this progam with the other virtual port.
+Now start this program with the other virtual port.
 
 > ./fake_arduino.py <port1>
 
 Put this in the background too.
 
-Finally start the ArduinoServer:
+Finally, start the ArduinoServer:
 
 > ./arduino.py <port2>
 
 Might try:
 > socat -v,-x -  /dev/cu.usbserial-FTFMMPHX,raw,nonblock,echo=0,crnl,ispeed=9600,ospeed=9600
-with the usb adapter attached, but its working as described above.
+with the usb adapter attached, but it's working as described above.
 
 
-Currently the data is pretty dumb but the time does update
+Currently, the data is pretty dumb but the time does update
 """
 import argparse
 import time
@@ -41,7 +41,7 @@ parser.add_argument('port', help='serial port connected to arduino')
     
 args = parser.parse_args()
 
-with serial.Serial(args.port, 9600, rtscts=True,dsrdtr=True) as ser:
+with serial.Serial(args.port, 9600, rtscts=True, dsrdtr=True) as ser:
     n = 0
     m = 0
     d = 50
@@ -51,4 +51,3 @@ with serial.Serial(args.port, 9600, rtscts=True,dsrdtr=True) as ser:
         n += d
         m += 1
         time.sleep(d/1000)
-

@@ -6,17 +6,16 @@ Provides:
     - uInterface
 
 """
-import time
-#
 import zmq
 import astropy.units as u
-from astropy.coordinates import EarthLocation, Latitude, Longitude
+from astropy.coordinates import Latitude, Longitude
 from astropy.time import Time
 #
 from pushto.config import Configuration
 from pushto.stellarium import StellariumTC
 from pushto.telescope import Telescope
 from pushto.site import Site
+
 
 class uInterface(object):
     """
@@ -27,7 +26,7 @@ class uInterface(object):
     :param ctx: the :mod:`zmq` oontext, optional
     :type ctx: :obj:`zmq.Context` or None
 
-    >>> ui = uInterface();
+    >>> ui = uInterface()
     >>> ui.splash()
     >>> ui.main_menu()
     
@@ -84,7 +83,7 @@ class uInterface(object):
                 self.deploy()
             elif response == '3':
                 if self.site:
-                    print('Reseting alignment')
+                    print('Resetting alignment')
                     self.site.reset_alignment()
             elif response == '4':
                 self.undeploy()
@@ -97,7 +96,7 @@ class uInterface(object):
         while True:
             print("** Configuration Menu:\n")
             print("** 1. Configure Communications")
-            print("** 2. Configure Loction")
+            print("** 2. Configure Location")
             print("** 3. Configure Encoders")
             print("** 4. Configure Pointing")
             print("** 5. Make current configuration the default")
@@ -179,7 +178,7 @@ class uInterface(object):
             print("** 3. Set elevation")
             print("** 4. Set pressure")
             print("** 5. Set temperature")
-            print("** 6. Set relitive humidity")
+            print("** 6. Set relative humidity")
             print("** 7. Return to Configuration Menu\n")
             
             response = input("** Enter menu number: ")
@@ -321,14 +320,13 @@ class uInterface(object):
     def undeploy(self):
         print('Ending all processes, good-bye')
         if self.state == 'RUNNING':
-            self.telescope.close() # this flushes everything downstream
+            self.telescope.close()  # this flushes everything downstream
         self.ctx.destroy()
 
         self.state = 'UNDEPLOYED'
 
 
 def main():
-    import os
     import argparse
     import logging
     from zmq.log.handlers import PUBHandler
@@ -351,9 +349,10 @@ def main():
     # in another window the log can be watched with
     #   python -m zmq.log tcp://127.0.0.1:12345
 
-    ui = uInterface(args.config_file, ctx=ctx);
+    ui = uInterface(args.config_file, ctx=ctx)
     ui.splash()
     ui.main_menu()
+
 
 if __name__ == '__main__':
     main()

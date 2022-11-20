@@ -7,6 +7,7 @@ Messages
 
 message_types = ('DATA', 'ALIGN', 'CMD')
 
+
 class Message(object):
     """
     Base class for messages.
@@ -14,7 +15,7 @@ class Message(object):
 
     def __init__(self, *args, **kwargs):
         self.type = kwargs['type']
-        self.msg = {'type': self.type,}
+        self.msg = {'type': self.type, }
 
     def __repr__(self):
         return str(self.msg)
@@ -30,6 +31,7 @@ class Message(object):
         else:
             return None
 
+
 class CmdMessage(Message):
 
     def __init__(self, *args, **kwargs):
@@ -44,6 +46,7 @@ class CmdMessage(Message):
         self.msg['cmd'] = self.cmd
         self.msg['opt'] = self.opt
         return self.msg
+
 
 class DataMessage(Message):
     """
@@ -81,6 +84,7 @@ class DataMessage(Message):
         self.msg['dec']       = self.dec
         return self.msg
 
+
 class AlignMessage(Message):
     """
     Unified key names for the various coordinate systems.
@@ -109,13 +113,13 @@ class AlignMessage(Message):
 if __name__ == '__main__':
 
     "ArduinoProxy creates a DataMessage with time, phi_cnt, and theta_cnt"
-    ap_msg = DataMessage(time = 123, phi_cnt = 1000, theta_cnt = -100)
+    ap_msg = DataMessage(time=123, phi_cnt=1000, theta_cnt=-100)
     
     "It then writes it to the PUB socket"
     ap_msg_json = ap_msg.to_json()
     print("AP PUB: %s" % ap_msg_json)
 
-    "It is recieved by PushTo"
+    "It is received by PushTo"
     pt_msg = Message.from_json(ap_msg_json)
     print("PT SUB: %s" % pt_msg.to_json())  
     
@@ -132,21 +136,17 @@ if __name__ == '__main__':
     pt_msg_json = pt_msg.to_json()
     print("PT PUB: %s" % pt_msg_json)
 
-    "It is recieved by StellariumProxy"
+    "It is received by StellariumProxy"
     sp_msg = Message.from_json(pt_msg_json)
     print("SP SUB: %s" % sp_msg.to_json())  
 
-    
     "Create a CmdMessage"
     cmd = CmdMessage(cmd='Stop')
     cmd_json = cmd.to_json()
     print(cmd_json)
     
-    "Create a AligndMessage"
-    am = AlignMessage(time = 321, ra=55, dec=-10, azi=350, alt=34)
+    "Create a AlignMessage"
+    am = AlignMessage(time=321, ra=55, dec=-10, azi=350, alt=34)
     am_json = am.to_json()
     print(am_json)
-    
-    
-
     

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Subscripe to the PushTo monitoring data stream.
+Subscribe to the PushTo monitoring data stream.
 """
 import sys
 import argparse

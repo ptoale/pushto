@@ -44,15 +44,15 @@ The SVD decomposition is written as
 
    B = U S V^T
 
-where :math:`U` and :math:`V` are orthogonal matrices and :math:`S` is a digonal
-matrix with compoents :math:`(s_1, s_2, s_3)` with  :math:`s_1 \ge s_2 \ge s_3`.
+where :math:`U` and :math:`V` are orthogonal matrices and :math:`S` is a diagonal
+matrix with components :math:`(s_1, s_2, s_3)` with  :math:`s_1 \ge s_2 \ge s_3`.
 The optimal rotation matrix is then given by
 
 .. math::
 
    R = U S^\prime V^T
 
-where :math:`S^\prime` is a diagonal matrix with compoents :math:`(1, 1, d)` where
+where :math:`S^\prime` is a diagonal matrix with components :math:`(1, 1, d)` where
 :math:`d = \det(U) \det(V) = \pm 1`.
 
 The value of the cost function at the minimum is a kind of :math:`\chi^2` and 

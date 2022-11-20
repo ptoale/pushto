@@ -25,16 +25,19 @@ Horizontal coordinates: aligned with zenith and horizon
 """
 import numpy as np
 
+
 def vec_from_angles(theta, phi):
     """
-    Create a direction unit vector from a elevation and azimuthal angle.
-    
-    Args:
-        theta: elevation angle in degrees
-        phi:   azimuthal angle in degrees
-        
-    Returns:
-        unit vector in an np.array
+    Create a direction unit vector from elevation and azimuthal angles.
+
+    :param theta: elevation angle, in degrees
+    :type theta: float
+    :param phi: azimuthal angle, in degrees
+    :type phi: float
+
+    :return: unit direction vector
+    :rtype: :obj:`np.ndarray`
+
     """
     theta = np.radians(theta)
     phi = np.radians(phi)
@@ -42,16 +45,17 @@ def vec_from_angles(theta, phi):
     "direction vector"
     return np.array([np.cos(theta)*np.cos(phi), np.cos(theta)*np.sin(phi), np.sin(theta)])
 
+
 def angles_from_vec(v):
     """
     Create elevation and azimuthal angles from a direction vector.
     
-    Args:
-        v: direction vector in an np.array
-        
-    Returns:
-        elevation angle in degrees, azimuthal angle in degrees
-        
+    :param v: direction vector
+    :type v: :obj:`np.ndarray`
+
+    :return: elevation angle, azimuthal angle in degrees
+    :rtype: list
+
     """
     norm = np.linalg.norm(v)
     theta = np.arcsin(v[2]/norm)
@@ -76,6 +80,11 @@ class Aligner(object):
 
     def __init__(self, n_stars=None):
         self.n_stars = n_stars
+        self.stars = None
+        self.R = None
+        self.R_inv = None
+        self.R_chi2 = None
+        self.corr = None
         self.reset()
         
     def add_star(self, theta, phi, alt, azi, weight=1):
@@ -112,6 +121,7 @@ class Aligner(object):
         self.R = np.identity(3)
         self.R_inv = np.identity(3)
         self.R_chi2 = None
+        self.corr = None
 
     def update(self):
         """
@@ -124,31 +134,30 @@ class Aligner(object):
 
         "Calculate the B matrix"
         norm = 0
-        B = 0
+        bm = 0
         for star in self.stars:
             v1 = star[0]
             v2 = star[1]
             w = star[2]
             norm += w
-            B += w*np.outer(v2, v1)
-        B /= norm
+            bm += w*np.outer(v2, v1)
+        bm /= norm
 
         "Get the single value decomposition"
-        u, s, vh = np.linalg.svd(B)
+        u, s, vh = np.linalg.svd(bm)
         
         "Calculate the optimal rotation matrix and the likelihood of it"
         d = np.linalg.det(u)*np.linalg.det(vh.T)
-        Aopt = np.matmul(u, np.matmul(np.diag([1,1,d]), vh))
-        L_Aopt = 1 - s[0] - s[1] - d*s[2]
-        Ps = np.diag([(1-s[0])/(s[1]+d*s[2])**2, (1-s[1])/(s[0]+d*s[2])**2, (1-d*s[2])/(s[0]+s[1])**2])/len(self.stars)
-        Ph = np.matmul(vh.T, np.matmul(Ps, vh))
+        a_opt = np.matmul(u, np.matmul(np.diag([1, 1, d]), vh))
+        l_opt = 1 - s[0] - s[1] - d*s[2]
+        ps = np.diag([(1-s[0])/(s[1]+d*s[2])**2, (1-s[1])/(s[0]+d*s[2])**2, (1-d*s[2])/(s[0]+s[1])**2])/len(self.stars)
+        ph = np.matmul(vh.T, np.matmul(ps, vh))
         
         "Update the values"
-        self.R = Aopt
+        self.R = a_opt
         self.R_inv = np.linalg.inv(self.R)
-        self.R_chi2 = L_Aopt
-        self.corr = Ph
-
+        self.R_chi2 = l_opt
+        self.corr = ph
 
     def telescope_to_horizontal(self, theta, phi):
         """
@@ -187,7 +196,6 @@ class Aligner(object):
 
 if __name__ == '__main__':
 
-    
     "pick some directions, from Taki paper"
     t1 = np.array([-0.01716476,  0.10539576, 0.99428221])
     t2 = np.array([ 0.53693373, -0.61810711, 0.57414787])
@@ -247,7 +255,7 @@ if __name__ == '__main__':
     print(' Correlation matrix in horizontal-frame:')
     print(aligner.corr)
     print('------------------------')
-    print('Reconstruced angle error:')
+    print('Reconstructed angle error:')
     print('------------------------')
     print(" del1= {:.2f}'".format(d1))
     print(" del2= {:.2f}'".format(d2))
