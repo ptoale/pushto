@@ -7,13 +7,12 @@ import logging
 import time
 import zmq
 import numpy as np
-import astropy.units as u
 from astropy.time import Time
-from astropy.coordinates import EarthLocation, SkyCoord, AltAz, Angle
 from pushto.config import Configuration
 from pushto.stellarium import StellariumTC, StellariumRPC
 from pushto.alignment import vec_from_angles
 from pushto.messages import Message, CmdMessage
+from pushto.site import Location
 
 if __name__ == '__main__':
 
@@ -28,7 +27,7 @@ if __name__ == '__main__':
     cfg = Configuration()
     
     "Get the location"
-    location = cfg.get_location()
+    location = Location.setup(cfg)
 
     "Setup the address/ports"
     data_sub_address  = "tcp://%s:%s" % (cfg.get_host_ip(), cfg.get_td_eq_port())
@@ -62,18 +61,24 @@ if __name__ == '__main__':
     stc.start()
     
     "main loop"
+    print("Select a target in Stellarium, click 'Current object' and then click 'Slew'")
     try:
         while True:
             socks = dict(poller.poll())
             if calib_sub_socket in socks:
+                "convert stellarium ra and dec to azi and alt"
                 calib = Message.from_json(calib_sub_socket.recv_json())
+                azi, alt = location.equatorial_to_horizontal(calib.ra, calib.dec, Time(calib.time, format='iso'))
+                
+                "get azi and alt from stellarium rpc"
                 stel_altaz = rpc.get_selected_alt_az()
+                
                 r1 = vec_from_angles(stel_altaz[0], stel_altaz[1])
-                r2 = vec_from_angles(calib.alt, calib.azi)
+                r2 = vec_from_angles(alt, azi)
                 phi = 3600*np.degrees(np.arccos(np.dot(r1, r2)))
                 print(str(calib))
                 print('     RPC: {:10.6f}, {:10.6f}'.format(stel_altaz[0], stel_altaz[1]))
-                print(' astropy: {:10.6f}, {:10.6f}'.format(calib.alt, calib.azi))
+                print(' astropy: {:10.6f}, {:10.6f}'.format(alt, azi))
                 print('     phi: ' + str(phi) + ' arcsec')
             
     except KeyboardInterrupt:

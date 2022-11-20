@@ -58,7 +58,7 @@ class Configuration(object):
     def __init__(self, filename=None):
         self.config = ConfigParser()
 
-        fn = DEFAULT_CONFIG_FILE if filename is None else filename
+        fn = filename or DEFAULT_CONFIG_FILE
         try:
             self.config.read_file(open(fn))
             logging.info('opened config from %s' % fn)
