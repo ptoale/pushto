@@ -9,5 +9,4 @@ The :mod:`pushto` package
    site
    alignment
    config
-   ui
 

@@ -10,8 +10,6 @@ from util import counts_to_telescope
 from config import Configuration
 from messages import Message
 
-
-
 if __name__ == '__main__':
     import argparse
     

@@ -153,7 +153,7 @@ it's atmospheric refraction model seems to match Stellarium's calculation.
 The user interface allows for easy configuration of all relevant parameters, deploying the
 application, and terminating the application. To start it:
 
-        > python pushto/ui.py
+        > pushto
 
         ************************************************
         **                PushTo v1.0                 **
