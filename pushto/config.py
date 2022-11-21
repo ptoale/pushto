@@ -57,16 +57,17 @@ class Configuration(object):
     
     """
 
-    def __init__(self, filename=DEFAULT_CONFIG_FILE):
+    def __init__(self, filename):
         self.config = ConfigParser()
 
+        self.filename = filename or DEFAULT_CONFIG_FILE
         try:
-            with open(filename, 'r') as f:
+            with open(self.filename, 'r') as f:
                 self.config.read_file(f)
                 logging.info('opened config from %s' % f)
 
         except FileNotFoundError:
-            sys.exit('Error opening config file: %s' % filename)
+            sys.exit('Error opening config file: %s' % self.filename)
 
     def save(self):
         """
