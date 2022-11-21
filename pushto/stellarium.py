@@ -299,7 +299,7 @@ class StellariumTC(threading.Thread):
             while True:
                 logging.debug('attempting handshake')
                 self.connection, clientAddress = self.sock.accept()
-                if self.connection is None:
+                if self.connection is not None:
                     logging.debug('connected to Stellarium')
                     break
         except Exception as e:
