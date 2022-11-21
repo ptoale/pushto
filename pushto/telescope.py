@@ -225,7 +225,7 @@ class Encoders(object):
         :param theta_cnt: count of polar encoder
         :type theta_cnt: long
         
-        :return: theta and phi, in degrees
+        :return: phi and theta, in degrees
         :rtype: list(float)
         """
 
