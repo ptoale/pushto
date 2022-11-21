@@ -3,7 +3,7 @@
 User interface.
 
 Provides:
-    - uInterface
+    - Pushto
 
 """
 import zmq
@@ -17,7 +17,7 @@ from pushto.telescope import Telescope
 from pushto.site import Site
 
 
-class uInterface(object):
+class Pushto(object):
     """
     The user interface class.
     
@@ -26,22 +26,18 @@ class uInterface(object):
     :param ctx: the :mod:`zmq` oontext, optional
     :type ctx: :obj:`zmq.Context` or None
 
-    >>> ui = uInterface()
-    >>> ui.splash()
-    >>> ui.main_menu()
+    >>> pushto = Pushto()
+    >>> pushto.main_menu()
     
     The interface can be started with:
     
-       python ui.py
+       python pushto
     
     """
 
     def __init__(self, config_file, ctx=None):
-
-        "Get the configuration object"
         self.cfg = Configuration(filename=config_file)
 
-        "Setup the command socket"
         if ctx is None:
             self.ctx = zmq.Context()
         else:
@@ -52,10 +48,6 @@ class uInterface(object):
         self.site = None
         self.state = 'UNDEPLOYED'
 
-    def splash(self):
-        """
-        Clear the screen and print the splash message.
-        """
         print('\033c')
         print("************************************************")
         print("**                PushTo v1.0                 **")
@@ -326,7 +318,7 @@ class uInterface(object):
         self.state = 'UNDEPLOYED'
 
 
-def main():
+if __name__ == '__main__':
     import argparse
     import logging
     from zmq.log.handlers import PUBHandler
@@ -347,10 +339,5 @@ def main():
     # in another window the log can be watched with
     #   python -m zmq.log tcp://127.0.0.1:12345
 
-    ui = uInterface(config_file=args.config_file, ctx=ctx)
-    ui.splash()
-    ui.main_menu()
-
-
-if __name__ == '__main__':
-    main()
+    pushto = Pushto(config_file=args.config_file, ctx=ctx)
+    pushto.main_menu()
