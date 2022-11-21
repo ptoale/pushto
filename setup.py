@@ -16,7 +16,7 @@ setuptools.setup(
         "Bug Tracker": "https://github.com/ptoale/pushto/issues"
     },
     license='MIT',
-    packages=['pushto'],
+    packages=['pushto', 'pushto.tests'],
     scripts=['scripts/pushto', 
              'scripts/fake_arduino', 
              'scripts/moni_listener',
