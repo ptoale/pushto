@@ -1,7 +1,7 @@
 Scripts
 ===============
 
-There are several included scripts, including the main user interface:
+There are several included scripts:
 
 - pushto
 - moni_listener
@@ -9,6 +9,13 @@ There are several included scripts, including the main user interface:
 - check_encoders
 - check_stellarium
 
+The main user interface is invoked with::
+
+    > pushto [-h] [--config_file CONFIG_FILE]
+
+The pointing/alignment data stream can be subscribed to with::
+
+   > moni_listener [-h] host port
 
 The :class:`fake_arduino` service mimics serial communication via a virtual socket. To use it,
 first create the virtual sockets (requires the :mod:`socat` utility)::
@@ -19,19 +26,25 @@ Record the two ports that are recorded: one is written to and the other is read 
 :class:`pushto.telescope.Telescope`. You can put socat in the background with::
 
    > ^Z
-
-and then::
-
    > bg
 
 Then start the faux server with::
 
-   > python fake_arduino.py <port1>
+   > fake_arduino [-h] <port1>
 
 This too can be put in the background. At this point <port2> will contain serial data
 of the correct format but with very little content.
 
-The :class:`moni_listener` subscribes to the pointing data stream. To use it::
+The :class:`pushto.telescope.Telescope` class can be exercised without the rest
+of the code with::
 
-   > python moni_listener.py <moni_host> <moni_port>
+    > check_encoders [-h] [--port PORT] [-d]
 
+This will read the serial port and print out the corresponding telescope attitude.
+
+The last script is useful for checking the difference between Stellarium and
+:mod:`astropy`. Make sure Stellarium is running and the telescope is connecting, then::
+
+    > check_stellarium
+
+From within Stellarium, select an object, click `Current object`, and then click `Slew`.

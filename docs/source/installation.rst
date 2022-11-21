@@ -15,10 +15,19 @@ creating virtual sockets that can mimic the serial port.
 
 - :mod:`socat` 1.7.4.3_0
 
-The following steps installs everything into a virtualenv::
+To get the source::
 
-   > virtualenv pushto
-   > cd pushto
+    > python -m venv pushto-env
+    > cd pushto-env
+    > source bin/activate
+    > git clone https://github.com/ptoale/pushto.git
+    > cd pushto
+    > python -m pip install -r requirements.txt
+
+Or, to install the python package::
+
+   > python -m venv pushto-env
+   > cd pushto-env
    > source bin/activate
-   > pip install git+https://github.com/ptoale/pushto.git
+   > python -m pip install git+https://github.com/ptoale/pushto.git
 
