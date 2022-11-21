@@ -52,12 +52,12 @@ class Configuration(object):
     """
     The configuration handler.
     
-    :param filename: configuration file name
-    :type filename: str
+    :param filename: configuration file name, optional
+    :type filename: str or None
     
     """
 
-    def __init__(self, filename):
+    def __init__(self, filename=None):
         self.config = ConfigParser()
 
         self.filename = filename or DEFAULT_CONFIG_FILE
