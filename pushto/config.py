@@ -36,14 +36,16 @@ Configuration stuff
     - tf:           tube flexure term proportional to cos(el)
 
 """
+import sys
 import logging
 from configparser import ConfigParser
-import importlib.resources
+from pathlib import Path
+from importlib.resources import files
 #
 import astropy.units as u
 from astropy.coordinates import EarthLocation, Latitude, Longitude
 
-DEFAULT_CONFIG_FILE = importlib.resources.path('pushto', 'pushto_default.cfg')
+DEFAULT_CONFIG_FILE = files('pushto').joinpath('pushto_default.cfg')
 
 
 class Configuration(object):
@@ -58,18 +60,23 @@ class Configuration(object):
     def __init__(self, filename=None):
         self.config = ConfigParser()
 
-        fn = filename or DEFAULT_CONFIG_FILE
-        try:
-            self.config.read_file(open(fn))
-            logging.info('opened config from %s' % fn)
-        except FileNotFoundError as e:
-            logging.error(str(e))
-            
-    def save(self, filename=None):
+        cfg_fp = DEFAULT_CONFIG_FILE
+        if filename:
+            cfg_fp = Path(filename)
+            if not cfg_fp.is_file():
+                logging.error("Filename does not exist! %s" % filename)
+                sys.exit('Filename does not exist!')
 
-        fn = DEFAULT_CONFIG_FILE if filename is None else filename
+        with cfg_fp.open() as f:
+            self.config.read_file(f)
+            logging.info('opened config from %s' % f)
 
-        self.config.write(open(fn, 'w'))        
+    def save(self):
+        """
+        Write the current configuration to the default config file.
+        """
+        with DEFAULT_CONFIG_FILE.open('w') as f:
+            self.config.write(f)
 
     """
     Communication info

@@ -330,12 +330,10 @@ def main():
     import argparse
     import logging
     from zmq.log.handlers import PUBHandler
-    from pushto.config import DEFAULT_CONFIG_FILE
-    
+
     "Setup argument parser"
     parser = argparse.ArgumentParser(description='PushTo User Interface')
-    parser.add_argument('--config_file', default=DEFAULT_CONFIG_FILE,
-                        help='File containing default configuration')
+    parser.add_argument('--config_file', help='File containing default configuration')
     
     args = parser.parse_args()
 
@@ -349,7 +347,7 @@ def main():
     # in another window the log can be watched with
     #   python -m zmq.log tcp://127.0.0.1:12345
 
-    ui = uInterface(args.config_file, ctx=ctx)
+    ui = uInterface(config_file=args.config_file, ctx=ctx)
     ui.splash()
     ui.main_menu()
 
