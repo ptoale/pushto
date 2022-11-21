@@ -37,45 +37,42 @@ Configuration stuff
 
 """
 import sys
+import os
 import logging
 from configparser import ConfigParser
-from pathlib import Path
 from importlib.resources import files
 #
 import astropy.units as u
 from astropy.coordinates import EarthLocation, Latitude, Longitude
 
-DEFAULT_CONFIG_FILE = files('pushto').joinpath('pushto_default.cfg')
+DEFAULT_CONFIG_FILE = os.fspath(files('pushto').joinpath('pushto_default.cfg'))
 
 
 class Configuration(object):
     """
     The configuration handler.
     
-    :param filename: configuration file name, or None for default configuration
+    :param filename: configuration file name
     :type filename: str
     
     """
 
-    def __init__(self, filename=None):
+    def __init__(self, filename=DEFAULT_CONFIG_FILE):
         self.config = ConfigParser()
 
-        cfg_fp = DEFAULT_CONFIG_FILE
-        if filename:
-            cfg_fp = Path(filename)
-            if not cfg_fp.is_file():
-                logging.error("Filename does not exist! %s" % filename)
-                sys.exit('Filename does not exist!')
+        try:
+            with open(filename, 'r') as f:
+                self.config.read_file(f)
+                logging.info('opened config from %s' % f)
 
-        with cfg_fp.open() as f:
-            self.config.read_file(f)
-            logging.info('opened config from %s' % f)
+        except FileNotFoundError:
+            sys.exit('Error opening config file: %s' % filename)
 
     def save(self):
         """
         Write the current configuration to the default config file.
         """
-        with DEFAULT_CONFIG_FILE.open('w') as f:
+        with open(DEFAULT_CONFIG_FILE, 'w') as f:
             self.config.write(f)
 
     """
@@ -660,8 +657,6 @@ class Configuration(object):
 
     
 if __name__ == '__main__':
-    import doctest
-    doctest.testmod()
     import argparse
     import sys
 

@@ -38,27 +38,27 @@ class TestAngles(unittest.TestCase):
         self.assertEqual(vec[2], 0)
 
         vec = pushto.alignment.vec_from_angles(90, 0)
-        self.assertEqual(vec[0], 6.123233995736766e-17)
+        self.assertAlmostEqual(vec[0], 0)
         self.assertEqual(vec[1], 1.0)
         self.assertEqual(vec[2], 0)
 
         vec = pushto.alignment.vec_from_angles(0, 90)
-        self.assertEqual(vec[0], 6.123233995736766e-17)
+        self.assertAlmostEqual(vec[0], 0)
         self.assertEqual(vec[1], 0)
         self.assertEqual(vec[2], 1.0)
 
         vec = pushto.alignment.vec_from_angles(180, 0)
         self.assertEqual(vec[0], -1.0)
-        self.assertEqual(vec[1], 1.2246467991473532e-16)
+        self.assertAlmostEqual(vec[1], 0)
         self.assertEqual(vec[2], 0)
 
         vec = pushto.alignment.vec_from_angles(270, 0)
-        self.assertEqual(vec[0], -1.8369701987210297e-16)
+        self.assertAlmostEqual(vec[0], 0)
         self.assertEqual(vec[1], -1.0)
         self.assertEqual(vec[2], 0)
 
         vec = pushto.alignment.vec_from_angles(0, -90)
-        self.assertEqual(vec[0], 6.123233995736766e-17)
+        self.assertAlmostEqual(vec[0], 0)
         self.assertEqual(vec[1], 0)
         self.assertEqual(vec[2], -1.0)
 
