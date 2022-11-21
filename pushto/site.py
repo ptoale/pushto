@@ -238,11 +238,8 @@ class Site(threading.Thread):
                 self.aligner.add_star(last_data['phi'], last_data['theta'], azi, alt)
 
                 phi, theta = self.aligner.horizontal_to_telescope(azi, alt)
-                msg.azi = azi
-                msg.alt = alt
-                msg.theta = theta
-                msg.phi = phi
-                self.pd_ta_socket.send_json(msg.to_json())
+                pd = {'s_phi': phi, 's_theta': theta, 't_phi': last_data['phi'], 't_theta': last_data['theta']}
+                self.pd_ta_socket.send_json(pd)
 
     def reset_alignment(self):
         """

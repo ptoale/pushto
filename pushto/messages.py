@@ -93,18 +93,22 @@ class AlignMessage(Message):
     def __init__(self, *args, **kwargs):
         super().__init__(type='ALIGN')
         
-        self.time = kwargs['time'] if 'time' in kwargs else None
-        self.azi  = kwargs['azi']  if 'azi'  in kwargs else None
-        self.alt  = kwargs['alt']  if 'alt'  in kwargs else None
-        self.ra   = kwargs['ra']   if 'ra'   in kwargs else None
-        self.dec  = kwargs['dec']  if 'dec'  in kwargs else None
+        self.time  = kwargs['time']  if 'time'  in kwargs else None
+        self.ra    = kwargs['ra']    if 'ra'    in kwargs else None
+        self.dec   = kwargs['dec']   if 'dec'   in kwargs else None
+        self.azi   = kwargs['azi']   if 'azi'   in kwargs else None
+        self.alt   = kwargs['alt']   if 'alt'   in kwargs else None
+        self.phi   = kwargs['phi']   if 'phi'   in kwargs else None
+        self.theta = kwargs['theta'] if 'theta' in kwargs else None
 
         self.msg = self.to_json()
         
     def to_json(self):
-        self.msg['time'] = self.time
-        self.msg['azi']  = self.azi
-        self.msg['alt']  = self.alt
-        self.msg['ra']   = self.ra
-        self.msg['dec']  = self.dec
+        self.msg['time']  = self.time
+        self.msg['ra']    = self.ra
+        self.msg['dec']   = self.dec
+        self.msg['azi']   = self.azi
+        self.msg['alt']   = self.alt
+        self.msg['phi']   = self.phi
+        self.msg['theta'] = self.theta
         return self.msg
