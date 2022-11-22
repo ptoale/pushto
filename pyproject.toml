@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "pushto"
+version = "1.1.0"
+description = "Push-to telescope interface to Stellarium"
+authors = ["Patrick Toale <ptoale@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+astropy = "^5.1.1"
+numpy = "^1.23.5"
+pyserial = "^3.5"
+pyzmq = "^24.0.1"
+requests = "^2.28.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
