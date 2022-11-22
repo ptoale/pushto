@@ -26,19 +26,19 @@ Table of contents:
 
 ## Installation
 
-To install everything into a virtual env:
+If you use [`poetry`](https://python-poetry.org) you can just do:
 
-    > virtualenv pushto
-    > cd pushto
-    > source bin/activate
-    > pip install git+https://github.com/ptoale/pushto.git
+    > git clone https://github.com/ptoale/pushto.git
+    > poetry install
+    > poetry run python -m unittest discover
+    > poetry run scripts/pushto
 
-Connect your arduino to the serial port and start Stellarium. You can then start the system
-with:
+Otherwise, you can install the dependencies with the aid of the requirements file:
 
-    > pushto
+    > git clone https://github.com/ptoale/pushto.git
+    > python -m pip install -r requirements.txt
 
-Change the configuration to match your setup and deploy.
+To run the program you will have to connect your arduino to the serial port and start Stellarium. 
 
 ---
 
